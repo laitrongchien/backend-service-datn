@@ -101,4 +101,15 @@ export class AuthService {
     });
     return { access_token, refresh_token };
   }
+
+  googleLogin(req) {
+    if (!req.user) {
+      return 'No user from google';
+    }
+
+    return {
+      message: 'User information from google',
+      user: req.user,
+    };
+  }
 }

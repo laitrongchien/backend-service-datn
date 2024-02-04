@@ -5,6 +5,7 @@ import RegisterDto from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -33,5 +34,17 @@ export class AuthController {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
     return await this.authService.refreshToken(userId, refreshToken);
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async googleAuth(@Req() req: Request) {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/redirect')
+  googleAuthRedirect(@Req() req: Request) {
+    // handles the Google OAuth2 callback
+    return this.authService.googleLogin(req);
   }
 }
