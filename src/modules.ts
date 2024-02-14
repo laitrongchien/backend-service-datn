@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TourModule } from './modules/tour/tour.module';
+import { MotorBikeModule } from './modules/motorBike/motorBike.module';
 
 export const Modules = [
   ConfigModule.forRoot({
@@ -15,4 +16,5 @@ export const Modules = [
   UserModule,
   AuthModule,
   TourModule,
+  MotorBikeModule,
 ];
