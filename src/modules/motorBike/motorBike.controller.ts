@@ -19,13 +19,11 @@ export class MotorBikeController {
   constructor(private readonly motorBikeService: MotorBikeService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async findAll() {
     return this.motorBikeService.getAllMotorBikes();
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     return this.motorBikeService.getMotorBikeById(id);
   }

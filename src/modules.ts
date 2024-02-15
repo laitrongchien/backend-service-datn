@@ -4,6 +4,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TourModule } from './modules/tour/tour.module';
 import { MotorBikeModule } from './modules/motorBike/motorBike.module';
+import { BookingTourModule } from './modules/bookingTour/bookingTour.module';
 
 export const Modules = [
   ConfigModule.forRoot({
@@ -17,4 +18,5 @@ export const Modules = [
   AuthModule,
   TourModule,
   MotorBikeModule,
+  BookingTourModule,
 ];

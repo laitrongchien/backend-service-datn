@@ -19,13 +19,11 @@ export class TourController {
   constructor(private readonly tourService: TourService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async findAll() {
     return this.tourService.getAllTours();
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     return this.tourService.getTourById(id);
   }
