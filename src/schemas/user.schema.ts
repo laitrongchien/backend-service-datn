@@ -20,6 +20,12 @@ export class User extends Document {
   @Prop({ default: 'register' })
   type: string;
 
+  @Prop({
+    default:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPAer2ilVW8b1pynyMFWdAVGWQWeDgLICig&usqp=CAU',
+  })
+  avatar: string;
+
   @Prop()
   refresh_token: string;
 }
