@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MotorBike } from '../../schemas/motorBike.schema';
-import { MotorBikeDto } from './dto/motorbike.dto';
+import { MotorBikeDto } from './dto/motorBike.dto';
 
 @Injectable()
 export class MotorBikeService {
