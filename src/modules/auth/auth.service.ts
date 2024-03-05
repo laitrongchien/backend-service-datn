@@ -60,9 +60,8 @@ export class AuthService {
   }
 
   async logout(userId: string) {
-    const user = await this.userService.getById(userId);
+    // const user = await this.userService.getById(userId);
     await this.userService.update(userId, {
-      ...user.toObject(),
       refresh_token: '',
     });
   }
@@ -81,7 +80,6 @@ export class AuthService {
     const access_token = this.generateAccessToken(payload);
     const refresh_token = this.generateRefreshToken(payload);
     await this.userService.update(user._id, {
-      ...user.toObject(),
       refresh_token,
     });
     return { access_token, refresh_token };
@@ -116,7 +114,6 @@ export class AuthService {
       const access_token = this.generateAccessToken(payload);
       const refresh_token = this.generateRefreshToken(payload);
       await this.userService.update(createdUser._id, {
-        ...createdUser,
         refresh_token,
       });
       return { ...createdUser, password: '', access_token, refresh_token };
@@ -131,10 +128,11 @@ export class AuthService {
     };
     const access_token = this.generateAccessToken(payload);
     const refresh_token = this.generateRefreshToken(payload);
-    await this.userService.update(user._id, {
-      ...user,
+    // console.log(user);
+    const res = await this.userService.update(user._id, {
       refresh_token,
     });
+    console.log(res);
     return { ...user._doc, password: '', access_token, refresh_token };
   }
 

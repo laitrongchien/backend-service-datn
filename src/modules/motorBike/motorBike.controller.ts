@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MotorBikeService } from './motorBike.service';
-import { MotorBikeDto } from './dto/MotorBike.dto';
+import { MotorBikeDto } from './dto/motorbike.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { RolesGuard } from '../auth/guards/role.guard';

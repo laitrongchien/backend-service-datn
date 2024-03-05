@@ -23,6 +23,11 @@ export class TourController {
     return this.tourService.getAllTours();
   }
 
+  @Get('/popular-tours')
+  async findPopularTours() {
+    return this.tourService.getAllTours();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.tourService.getTourById(id);
