@@ -38,7 +38,7 @@ export class UserController {
     @Body() updateProfileData: UpdateProfileDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.userService.updateProfile(
+    return this.userService.updateProfile(
       request.user['sub'],
       updateProfileData,
       file,

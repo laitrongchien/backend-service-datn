@@ -75,6 +75,7 @@ export class AuthService {
     const payload = {
       username: user.email,
       sub: user._id,
+      role: user.role,
     };
 
     const access_token = this.generateAccessToken(payload);
@@ -82,7 +83,7 @@ export class AuthService {
     await this.userService.update(user._id, {
       refresh_token,
     });
-    return { access_token, refresh_token };
+    return { ...user.toObject(), password: '', access_token, refresh_token };
   }
 
   async googleLogin(token: string) {
@@ -128,18 +129,16 @@ export class AuthService {
     };
     const access_token = this.generateAccessToken(payload);
     const refresh_token = this.generateRefreshToken(payload);
-    // console.log(user);
-    const res = await this.userService.update(user._id, {
+    await this.userService.update(user._id, {
       refresh_token,
     });
-    console.log(res);
     return { ...user._doc, password: '', access_token, refresh_token };
   }
 
   generateAccessToken(payload: object) {
     return this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
-      expiresIn: '86400s',
+      expiresIn: '21600s',
     });
   }
 

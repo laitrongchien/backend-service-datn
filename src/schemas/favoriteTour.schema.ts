@@ -10,9 +10,6 @@ export class FavoriteTour extends Document {
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   user: User;
-
-  @Prop({ default: false })
-  isFavorite: boolean;
 }
 
 export const FavoriteTourSchema = SchemaFactory.createForClass(FavoriteTour);

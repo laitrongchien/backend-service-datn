@@ -4,10 +4,13 @@ import {
   Post,
   Body,
   Param,
+  Query,
   Put,
+  Req,
   Delete,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { TourService } from './tour.service';
 import { TourDto } from './dto/tour.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -19,13 +22,13 @@ export class TourController {
   constructor(private readonly tourService: TourService) {}
 
   @Get()
-  async findAll() {
-    return this.tourService.getAllTours();
+  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.tourService.getAllTours(page, limit);
   }
 
   @Get('/popular-tours')
   async findPopularTours() {
-    return this.tourService.getAllTours();
+    return this.tourService.getPopularTours();
   }
 
   @Get(':id')
@@ -52,5 +55,11 @@ export class TourController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   async delete(@Param('id') id: string) {
     return this.tourService.deleteTour(id);
+  }
+
+  @Post('like-tour/:id')
+  @UseGuards(JwtAuthGuard)
+  likeTour(@Req() req: Request, @Param('id') tourId: string) {
+    return this.tourService.likeTour(req?.user['sub'], tourId);
   }
 }

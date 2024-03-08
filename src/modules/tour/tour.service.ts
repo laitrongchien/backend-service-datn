@@ -15,22 +15,66 @@ export class TourService {
 
   async createTour(createTourData: TourDto) {
     const createdTour = new this.tourModel(createTourData);
-    return createdTour.save();
+    return await createdTour.save();
   }
 
   async getTourById(id: string) {
-    return this.tourModel.findById(id);
+    return await this.tourModel.findById(id);
   }
 
-  async getAllTours() {
-    return this.tourModel.find();
+  async getAllTours(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const tours = await this.tourModel.find().skip(skip).limit(limit);
+    const totalTours = await this.tourModel.countDocuments();
+    const totalPages = Math.ceil(totalTours / limit);
+    return { tours, totalPages };
+  }
+
+  async getPopularTours() {
+    const tours = await this.tourModel.find();
+
+    // const updatedTours = await Promise.all(
+    //   tours.map(async (tour) => {
+    //     const favorite = await this.favoriteTourModel.findOne({
+    //       tour: tour._id,
+    //       user: userId,
+    //     });
+
+    //     tour.isFavorite = !!favorite;
+
+    //     return tour;
+    //   }),
+    // );
+
+    // return updatedTours;
+    return tours;
   }
 
   async updateTour(id: string, updateTourDto: TourDto) {
-    return this.tourModel.findByIdAndUpdate(id, updateTourDto, { new: true });
+    return await this.tourModel.findByIdAndUpdate(id, updateTourDto, {
+      new: true,
+    });
   }
 
   async deleteTour(id: string) {
-    return this.tourModel.findByIdAndDelete(id);
+    return await this.tourModel.findByIdAndDelete(id);
+  }
+
+  async likeTour(userId: string, tourId: string) {
+    const existingFavorite = await this.favoriteTourModel.findOne({
+      tour: tourId,
+      user: userId,
+    });
+    if (existingFavorite) {
+      await existingFavorite.deleteOne();
+      return { isFavorite: false };
+    } else {
+      const favoritedTour = new this.favoriteTourModel({
+        tour: tourId,
+        user: userId,
+      });
+      await favoritedTour.save();
+      return { isFavorite: true };
+    }
   }
 }

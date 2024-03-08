@@ -37,6 +37,9 @@ export class Tour extends Document {
 
   @Prop([String])
   images: string[];
+
+  @Prop()
+  isFavorite: boolean;
 }
 
 export const TourSchema = SchemaFactory.createForClass(Tour);

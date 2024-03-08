@@ -13,24 +13,28 @@ export class MotorBikeService {
 
   async createMotorBike(createMotorBikeData: MotorBikeDto) {
     const createdMotorBike = new this.motorBikeModel(createMotorBikeData);
-    return createdMotorBike.save();
+    return await createdMotorBike.save();
   }
 
   async getMotorBikeById(id: string) {
-    return this.motorBikeModel.findById(id);
+    return await this.motorBikeModel.findById(id);
   }
 
   async getAllMotorBikes() {
-    return this.motorBikeModel.find();
+    return await this.motorBikeModel.find();
   }
 
   async updateMotorBike(id: string, updateMotorBikeData: MotorBikeDto) {
-    return this.motorBikeModel.findByIdAndUpdate(id, updateMotorBikeData, {
-      new: true,
-    });
+    return await this.motorBikeModel.findByIdAndUpdate(
+      id,
+      updateMotorBikeData,
+      {
+        new: true,
+      },
+    );
   }
 
   async deleteMotorBike(id: string) {
-    return this.motorBikeModel.findByIdAndDelete(id);
+    return await this.motorBikeModel.findByIdAndDelete(id);
   }
 }

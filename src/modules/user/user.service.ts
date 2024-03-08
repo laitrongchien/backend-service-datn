@@ -57,7 +57,6 @@ export class UserService {
     file: Express.Multer.File,
   ) {
     const updateUser = await this.getById(userId);
-    console.log(updateUser);
     if (updateProfileData.name) updateUser.name = updateProfileData.name;
     if (file) {
       const res = await this.cloudinaryService.uploadImage(
