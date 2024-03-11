@@ -22,9 +22,21 @@ export class TourService {
     return await this.tourModel.findById(id);
   }
 
-  async getAllTours(page: number, limit: number) {
+  async getAllTours(page: number, limit: number, userId: string) {
     const skip = (page - 1) * limit;
-    const tours = await this.tourModel.find().skip(skip).limit(limit);
+    const findTours = await this.tourModel.find().skip(skip).limit(limit);
+    const tours = await Promise.all(
+      findTours.map(async (tour) => {
+        const favorite = await this.favoriteTourModel.findOne({
+          tour: tour._id,
+          user: userId,
+        });
+
+        tour.isFavorite = !!favorite;
+
+        return tour;
+      }),
+    );
     const totalTours = await this.tourModel.countDocuments();
     const totalPages = Math.ceil(totalTours / limit);
     return { tours, totalPages };
@@ -32,22 +44,11 @@ export class TourService {
 
   async getPopularTours() {
     const tours = await this.tourModel.find();
-
-    // const updatedTours = await Promise.all(
-    //   tours.map(async (tour) => {
-    //     const favorite = await this.favoriteTourModel.findOne({
-    //       tour: tour._id,
-    //       user: userId,
-    //     });
-
-    //     tour.isFavorite = !!favorite;
-
-    //     return tour;
-    //   }),
-    // );
-
-    // return updatedTours;
     return tours;
+  }
+
+  async getFavoriteTour(userId: string) {
+    return await this.favoriteTourModel.find({ user: userId }).populate('tour');
   }
 
   async updateTour(id: string, updateTourDto: TourDto) {
@@ -76,5 +77,12 @@ export class TourService {
       await favoritedTour.save();
       return { isFavorite: true };
     }
+  }
+
+  async unlikeTour(userId: string, tourId: string) {
+    return await this.favoriteTourModel.findOneAndDelete({
+      user: userId,
+      tour: tourId,
+    });
   }
 }

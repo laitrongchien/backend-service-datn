@@ -22,13 +22,23 @@ export class TourController {
   constructor(private readonly tourService: TourService) {}
 
   @Get()
-  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.tourService.getAllTours(page, limit);
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('userId') userId?: string,
+  ) {
+    return this.tourService.getAllTours(page, limit, userId);
   }
 
   @Get('/popular-tours')
   async findPopularTours() {
     return this.tourService.getPopularTours();
+  }
+
+  @Get('/favorite-tours')
+  @UseGuards(JwtAuthGuard)
+  getFavoriteTour(@Req() req: Request) {
+    return this.tourService.getFavoriteTour(req.user['sub']);
   }
 
   @Get(':id')
@@ -61,5 +71,11 @@ export class TourController {
   @UseGuards(JwtAuthGuard)
   likeTour(@Req() req: Request, @Param('id') tourId: string) {
     return this.tourService.likeTour(req?.user['sub'], tourId);
+  }
+
+  @Post('unlike-tour/:id')
+  @UseGuards(JwtAuthGuard)
+  unlikeTour(@Req() req: Request, @Param('id') tourId: string) {
+    return this.tourService.unlikeTour(req?.user['sub'], tourId);
   }
 }
