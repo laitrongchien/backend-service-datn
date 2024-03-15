@@ -2,12 +2,26 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class MotorBike extends Document {
+export class Motorbike extends Document {
   @Prop({ required: true })
   name: string;
 
   @Prop({ required: true })
   description: string;
+
+  @Prop({
+    default: 4.5,
+    min: 1,
+    max: 5,
+    set: (val: number) => Math.round(val * 10) / 10,
+  })
+  ratingsAverage: number;
+
+  @Prop({ default: 0 })
+  ratingsQuantity: number;
+
+  @Prop({ required: true })
+  price: number;
 
   @Prop({ required: true })
   engine: number;
@@ -16,13 +30,13 @@ export class MotorBike extends Document {
   maxPower: number;
 
   @Prop({ required: true })
-  gearbox: number;
+  type: string;
 
   @Prop({ required: true })
   weight: number;
 
   @Prop({ required: true })
-  seatHeight: number;
+  height: number;
 
   @Prop({ required: true })
   fuelCapacity: number;
@@ -32,6 +46,9 @@ export class MotorBike extends Document {
 
   @Prop()
   image: string;
+
+  @Prop()
+  isFavorite: boolean;
 }
 
-export const MotorBikeSchema = SchemaFactory.createForClass(MotorBike);
+export const MotorbikeSchema = SchemaFactory.createForClass(Motorbike);

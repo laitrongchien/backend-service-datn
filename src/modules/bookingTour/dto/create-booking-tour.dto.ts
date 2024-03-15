@@ -15,7 +15,7 @@ export class CreateBookingTourDto {
   user: string;
 
   @IsNotEmpty()
-  motorBike: string;
+  motorbike: string;
 
   @IsNotEmpty()
   @IsEmail()

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class MotorBikeDto {
+export class MotorbikeDto {
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -11,6 +11,10 @@ export class MotorBikeDto {
 
   @IsNotEmpty()
   @IsNumber()
+  price: number;
+
+  @IsNotEmpty()
+  @IsNumber()
   engine: number;
 
   @IsNotEmpty()
@@ -18,8 +22,8 @@ export class MotorBikeDto {
   maxPower: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  gearbox: number;
+  @IsString()
+  type: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -27,7 +31,7 @@ export class MotorBikeDto {
 
   @IsNotEmpty()
   @IsNumber()
-  seatHeight: number;
+  height: number;
 
   @IsNotEmpty()
   @IsNumber()

@@ -1,40 +1,116 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MotorBike } from '../../schemas/motorBike.schema';
-import { MotorBikeDto } from './dto/motorBike.dto';
+import { Motorbike } from '../../schemas/motorbike.schema';
+import { FavoriteMotorbike } from '../../schemas/favoriteMotorbike.schema';
+import { OrderMotorbike } from '../../schemas/orderMotorbike.schema';
+import { MotorbikeDto } from './dto/motorbike.dto';
+import { CreateOrderMotorbikeDto } from './dto/create-order-motorbike.dto';
 
 @Injectable()
-export class MotorBikeService {
+export class MotorbikeService {
   constructor(
-    @InjectModel(MotorBike.name)
-    private readonly motorBikeModel: Model<MotorBike>,
+    @InjectModel(Motorbike.name)
+    private readonly motorbikeModel: Model<Motorbike>,
+    @InjectModel(FavoriteMotorbike.name)
+    private readonly favoriteMotorbikeModel: Model<FavoriteMotorbike>,
+    @InjectModel(OrderMotorbike.name)
+    private readonly orderMotorbikeModel: Model<OrderMotorbike>,
   ) {}
 
-  async createMotorBike(createMotorBikeData: MotorBikeDto) {
-    const createdMotorBike = new this.motorBikeModel(createMotorBikeData);
-    return await createdMotorBike.save();
+  async createMotorbike(createMotorbikeData: MotorbikeDto) {
+    const createdMotorbike = new this.motorbikeModel(createMotorbikeData);
+    return await createdMotorbike.save();
   }
 
-  async getMotorBikeById(id: string) {
-    return await this.motorBikeModel.findById(id);
+  async getMotorbikeById(id: string) {
+    return await this.motorbikeModel.findById(id);
   }
 
-  async getAllMotorBikes() {
-    return await this.motorBikeModel.find();
+  async getAllMotorbikes(
+    filterOptions: any,
+    sortOptions: any,
+    page: number,
+    limit: number,
+    userId: string,
+  ) {
+    const skip = (page - 1) * limit;
+    const findMotorbikes = await this.motorbikeModel
+      .find(filterOptions)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit);
+    const motorbikes = await Promise.all(
+      findMotorbikes.map(async (motorbike) => {
+        const favorite = await this.favoriteMotorbikeModel.findOne({
+          motorbike: motorbike._id,
+          user: userId,
+        });
+
+        motorbike.isFavorite = !!favorite;
+
+        return motorbike;
+      }),
+    );
+    const totalMotorbikes =
+      await this.motorbikeModel.countDocuments(filterOptions);
+    const totalPages = Math.ceil(totalMotorbikes / limit);
+    return { motorbikes, totalPages };
   }
 
-  async updateMotorBike(id: string, updateMotorBikeData: MotorBikeDto) {
-    return await this.motorBikeModel.findByIdAndUpdate(
+  async getFavoriteMotorbike(userId: string) {
+    return await this.favoriteMotorbikeModel
+      .find({ user: userId })
+      .populate('motorbike');
+  }
+
+  async updateMotorbike(id: string, updateMotorbikeData: MotorbikeDto) {
+    return await this.motorbikeModel.findByIdAndUpdate(
       id,
-      updateMotorBikeData,
+      updateMotorbikeData,
       {
         new: true,
       },
     );
   }
 
-  async deleteMotorBike(id: string) {
-    return await this.motorBikeModel.findByIdAndDelete(id);
+  async deleteMotorbike(id: string) {
+    return await this.motorbikeModel.findByIdAndDelete(id);
+  }
+
+  async likeMotorbike(userId: string, motorbikeId: string) {
+    const existingFavorite = await this.favoriteMotorbikeModel.findOne({
+      motorbike: motorbikeId,
+      user: userId,
+    });
+    if (existingFavorite) {
+      await existingFavorite.deleteOne();
+      return { isFavorite: false };
+    } else {
+      const favoritedMotorbike = new this.favoriteMotorbikeModel({
+        motorbike: motorbikeId,
+        user: userId,
+      });
+      await favoritedMotorbike.save();
+      return { isFavorite: true };
+    }
+  }
+
+  async unlikeMotorbike(userId: string, motorbikeId: string) {
+    return await this.favoriteMotorbikeModel.findOneAndDelete({
+      user: userId,
+      motorbike: motorbikeId,
+    });
+  }
+
+  async createOrderMotorbike(
+    userId: string,
+    createOrderMotorbikeDto: CreateOrderMotorbikeDto,
+  ) {
+    const newOrder = new this.orderMotorbikeModel({
+      user: userId,
+      motorbikes: createOrderMotorbikeDto.motorbikes,
+    });
+    return await newOrder.save();
   }
 }

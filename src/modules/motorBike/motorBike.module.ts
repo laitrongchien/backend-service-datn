@@ -1,15 +1,21 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MotorBikeSchema } from '../../schemas/motorBike.schema';
-import { MotorBikeController } from './motorBike.controller';
-import { MotorBikeService } from './motorBike.service';
+import { MotorbikeSchema } from '../../schemas/motorbike.schema';
+import { FavoriteMotorbikeSchema } from 'src/schemas/favoriteMotorbike.schema';
+import { OrderMotorbikeSchema } from 'src/schemas/orderMotorbike.schema';
+import { MotorbikeController } from './motorbike.controller';
+import { MotorbikeService } from './motorbike.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'MotorBike', schema: MotorBikeSchema }]),
+    MongooseModule.forFeature([
+      { name: 'Motorbike', schema: MotorbikeSchema },
+      { name: 'FavoriteMotorbike', schema: FavoriteMotorbikeSchema },
+      { name: 'OrderMotorbike', schema: OrderMotorbikeSchema },
+    ]),
   ],
-  controllers: [MotorBikeController],
-  providers: [MotorBikeService],
-  exports: [MotorBikeService],
+  controllers: [MotorbikeController],
+  providers: [MotorbikeService],
+  exports: [MotorbikeService],
 })
-export class MotorBikeModule {}
+export class MotorbikeModule {}
