@@ -41,7 +41,7 @@ export class TourController {
     return this.tourService.getFavoriteTour(req.user['sub']);
   }
 
-  @Get(':id')
+  @Get('/get-tour/:id')
   async findOne(@Param('id') id: string) {
     return this.tourService.getTourById(id);
   }

@@ -13,14 +13,18 @@ export class BookingTourService {
 
   async createBookingTour(createBookingTourData: CreateBookingTourDto) {
     const createdBookingTour = new this.bookingTourModel(createBookingTourData);
-    return createdBookingTour.save();
+    return await createdBookingTour.save();
   }
 
   async getBookingTourById(id: string) {
-    return this.bookingTourModel.findById(id);
+    return await this.bookingTourModel.findById(id);
+  }
+
+  async getBookingTourByUser(userId: string) {
+    return await this.bookingTourModel.find({ user: userId });
   }
 
   async getAllBookingTours() {
-    return this.bookingTourModel.find().populate('user').populate('tour');
+    return await this.bookingTourModel.find().populate('user').populate('tour');
   }
 }

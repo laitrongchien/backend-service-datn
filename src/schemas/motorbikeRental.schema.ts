@@ -4,7 +4,7 @@ import { User } from './user.schema';
 import { Motorbike } from './motorbike.schema';
 
 @Schema({ timestamps: true })
-export class OrderMotorbike extends Document {
+export class MotorbikeRental extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   user: User;
 
@@ -14,7 +14,7 @@ export class OrderMotorbike extends Document {
         motorbike: { type: MongooseSchema.Types.ObjectId, ref: 'Motorbike' },
         startDate: Date,
         finishDate: Date,
-        numberMotorbike: Number,
+        numMotorbikes: Number,
       },
     ],
   })
@@ -22,9 +22,15 @@ export class OrderMotorbike extends Document {
     motorbike: Motorbike;
     startDate: Date;
     finishDate: Date;
-    numberMotorbike: number;
+    numMotorbikes: number;
   }[];
+
+  @Prop({ default: 'payAll' })
+  paymentType: string;
+
+  @Prop()
+  totalPrice: number;
 }
 
-export const OrderMotorbikeSchema =
-  SchemaFactory.createForClass(OrderMotorbike);
+export const MotorbikeRentalSchema =
+  SchemaFactory.createForClass(MotorbikeRental);

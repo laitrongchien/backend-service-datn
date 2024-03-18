@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 // import { Schema as MongooseSchema } from 'mongoose';
 
 export class CreateBookingTourDto {
@@ -14,22 +8,12 @@ export class CreateBookingTourDto {
   @IsNotEmpty()
   user: string;
 
-  @IsNotEmpty()
-  motorbike: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   phone: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   startDate: Date;
-
-  @IsOptional()
-  finishDate: Date;
 
   @IsNotEmpty()
   @IsNumber()
@@ -38,4 +22,10 @@ export class CreateBookingTourDto {
   @IsOptional()
   @IsString()
   note: string;
+
+  @IsString()
+  paymentType: string;
+
+  @IsNumber()
+  totalPrice: number;
 }

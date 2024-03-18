@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -28,10 +29,6 @@ export class TourDto {
   @IsString()
   summary: string;
 
-  @IsNotEmpty()
-  @IsString()
-  description: string;
-
   @IsOptional()
   @IsString()
   imageCover: string;
@@ -39,4 +36,28 @@ export class TourDto {
   @IsOptional()
   @IsString({ each: true })
   images: string[];
+
+  @IsNotEmpty()
+  startLocation: string;
+
+  @IsNotEmpty()
+  startDates: Date[];
+
+  @IsNotEmpty()
+  @IsArray()
+  itinerary: ItineraryDto[];
+}
+
+class ItineraryDto {
+  @IsNumber()
+  day: number;
+
+  @IsString()
+  route: string;
+
+  @IsString()
+  distance: number;
+
+  @IsString()
+  description: string;
 }

@@ -29,14 +29,37 @@ export class Tour extends Document {
   @Prop({ required: true })
   summary: string;
 
-  @Prop({ required: true })
-  description: string;
-
-  @Prop({ default: 'abcddd' })
+  @Prop({
+    default:
+      'https://motorbiketourexpert.com/demo/wp-content/uploads/2023/11/pu-luong-nature-reserve-motorbike.jpg',
+  })
   imageCover: string;
 
   @Prop([String])
   images: string[];
+
+  @Prop()
+  startLocation: string;
+
+  @Prop([Date])
+  startDates: Date[];
+
+  @Prop({
+    type: [
+      {
+        day: Number,
+        route: String,
+        distance: Number,
+        description: String,
+      },
+    ],
+  })
+  itinerary: {
+    day: number;
+    route: string;
+    distance: number;
+    description: string;
+  }[];
 
   @Prop()
   isFavorite: boolean;

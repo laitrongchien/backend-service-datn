@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Motorbike } from '../../schemas/motorbike.schema';
 import { FavoriteMotorbike } from '../../schemas/favoriteMotorbike.schema';
-import { OrderMotorbike } from '../../schemas/orderMotorbike.schema';
+import { MotorbikeRental } from 'src/schemas/motorbikeRental.schema';
 import { MotorbikeDto } from './dto/motorbike.dto';
-import { CreateOrderMotorbikeDto } from './dto/create-order-motorbike.dto';
+import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
 
 @Injectable()
 export class MotorbikeService {
@@ -14,8 +14,8 @@ export class MotorbikeService {
     private readonly motorbikeModel: Model<Motorbike>,
     @InjectModel(FavoriteMotorbike.name)
     private readonly favoriteMotorbikeModel: Model<FavoriteMotorbike>,
-    @InjectModel(OrderMotorbike.name)
-    private readonly orderMotorbikeModel: Model<OrderMotorbike>,
+    @InjectModel(MotorbikeRental.name)
+    private readonly motorbikeRentalModel: Model<MotorbikeRental>,
   ) {}
 
   async createMotorbike(createMotorbikeData: MotorbikeDto) {
@@ -103,14 +103,27 @@ export class MotorbikeService {
     });
   }
 
-  async createOrderMotorbike(
+  async createRentalMotorbike(
     userId: string,
-    createOrderMotorbikeDto: CreateOrderMotorbikeDto,
+    createRentalMotorbikeDto: CreateRentalMotorbikeDto,
   ) {
-    const newOrder = new this.orderMotorbikeModel({
+    const newRental = new this.motorbikeRentalModel({
       user: userId,
-      motorbikes: createOrderMotorbikeDto.motorbikes,
+      motorbikes: createRentalMotorbikeDto.motorbikes,
+      paymentType: createRentalMotorbikeDto.paymentType,
+      totalPrice: createRentalMotorbikeDto.totalPrice,
     });
-    return await newOrder.save();
+    return await newRental.save();
+  }
+
+  async getMotorbikeRentalsByUser(userId: string) {
+    return await this.motorbikeRentalModel.find({ user: userId });
+  }
+
+  async getMotorbikeRentalDetail(rentalId: string) {
+    return await this.motorbikeRentalModel.findById(rentalId).populate({
+      path: 'motorbikes',
+      populate: { path: 'motorbike', select: 'name image price' },
+    });
   }
 }

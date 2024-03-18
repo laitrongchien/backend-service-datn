@@ -16,7 +16,7 @@ import { MotorbikeDto } from './dto/motorbike.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { RolesGuard } from '../auth/guards/role.guard';
-import { CreateOrderMotorbikeDto } from './dto/create-order-motorbike.dto';
+import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
 
 @Controller('motorbike')
 export class MotorbikeController {
@@ -89,15 +89,27 @@ export class MotorbikeController {
     return this.motorbikeService.unlikeMotorbike(req?.user['sub'], motorbikeId);
   }
 
-  @Post('create-order')
+  @Post('create-rental')
   @UseGuards(JwtAuthGuard)
-  orderMotorbike(
+  rentMotorbike(
     @Req() req: Request,
-    @Body() createOrderMotorbikeDto: CreateOrderMotorbikeDto,
+    @Body() createRentalMotorbikeDto: CreateRentalMotorbikeDto,
   ) {
-    return this.motorbikeService.createOrderMotorbike(
+    return this.motorbikeService.createRentalMotorbike(
       req?.user['sub'],
-      createOrderMotorbikeDto,
+      createRentalMotorbikeDto,
     );
+  }
+
+  @Get('get-rentals-by-user')
+  @UseGuards(JwtAuthGuard)
+  getUserMotorbikeRentals(@Req() req: Request) {
+    return this.motorbikeService.getMotorbikeRentalsByUser(req?.user['sub']);
+  }
+
+  @Get('get-rental-detail/:rentalId')
+  @UseGuards(JwtAuthGuard)
+  getMotorbikeRentalDetail(@Param('rentalId') rentalId: string) {
+    return this.motorbikeService.getMotorbikeRentalDetail(rentalId);
   }
 }
