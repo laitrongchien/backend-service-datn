@@ -13,7 +13,7 @@ export class Tour extends Document {
   difficulty: string;
 
   @Prop({
-    default: 4.5,
+    default: 0,
     min: 1,
     max: 5,
     set: (val: number) => Math.round(val * 10) / 10,

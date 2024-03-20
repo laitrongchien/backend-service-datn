@@ -7,6 +7,7 @@ import { MotorbikeModule } from './modules/motorbike/motorbike.module';
 import { BookingTourModule } from './modules/bookingTour/bookingTour.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { ReviewModule } from './modules/review/review.module';
 
 export const Modules = [
   ConfigModule.forRoot({
@@ -23,4 +24,5 @@ export const Modules = [
   BookingTourModule,
   CloudinaryModule,
   PaymentModule,
+  ReviewModule,
 ];
