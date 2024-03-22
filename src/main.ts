@@ -7,7 +7,9 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:3006',
       'https://vietnam-motorbike-tours.vercel.app',
+      'https://vnmotor-admin-management.vercel.app',
     ],
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
