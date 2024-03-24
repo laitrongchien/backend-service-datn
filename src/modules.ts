@@ -8,6 +8,7 @@ import { BookingTourModule } from './modules/bookingTour/bookingTour.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { ReviewModule } from './modules/review/review.module';
+import { MotorIdentificationModule } from './modules/motorIdentification/motorIdentification.module';
 
 export const Modules = [
   ConfigModule.forRoot({
@@ -25,4 +26,5 @@ export const Modules = [
   CloudinaryModule,
   PaymentModule,
   ReviewModule,
+  MotorIdentificationModule,
 ];

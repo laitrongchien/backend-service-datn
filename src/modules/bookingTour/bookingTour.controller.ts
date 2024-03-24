@@ -11,13 +11,16 @@ import { Request } from 'express';
 import { BookingTourService } from './bookingTour.service';
 import { CreateBookingTourDto } from './dto/create-booking-tour.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @Controller('booking')
 export class BookingTourController {
   constructor(private readonly bookingTourService: BookingTourService) {}
 
   @Get('all')
-  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async findAll() {
     return this.bookingTourService.getAllBookingTours();
   }

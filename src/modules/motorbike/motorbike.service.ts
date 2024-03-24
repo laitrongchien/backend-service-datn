@@ -116,6 +116,17 @@ export class MotorbikeService {
     return await newRental.save();
   }
 
+  async getAllMotorbikeRentals() {
+    return await this.motorbikeRentalModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'motorbikes',
+        populate: { path: 'motorbike', select: 'name' },
+      })
+      .populate({ path: 'user', select: 'name email' });
+  }
+
   async getMotorbikeRentalsByUser(userId: string) {
     return await this.motorbikeRentalModel.find({ user: userId });
   }

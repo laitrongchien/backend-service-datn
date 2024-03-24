@@ -101,6 +101,13 @@ export class MotorbikeController {
     );
   }
 
+  @Get('get-all-rentals')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  getAllRentals() {
+    return this.motorbikeService.getAllMotorbikeRentals();
+  }
+
   @Get('get-rentals-by-user')
   @UseGuards(JwtAuthGuard)
   getUserMotorbikeRentals(@Req() req: Request) {

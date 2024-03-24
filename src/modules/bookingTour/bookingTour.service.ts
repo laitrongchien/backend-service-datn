@@ -25,6 +25,8 @@ export class BookingTourService {
   }
 
   async getAllBookingTours() {
-    return await this.bookingTourModel.find().populate('user').populate('tour');
+    return await this.bookingTourModel
+      .find()
+      .populate({ path: 'user', select: 'name email' });
   }
 }

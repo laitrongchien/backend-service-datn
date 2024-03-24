@@ -28,6 +28,9 @@ export class BookingTour extends Document {
 
   @Prop()
   totalPrice: number;
+
+  @Prop({ default: 'waiting' })
+  status: string;
 }
 
 export const BookingTourSchema = SchemaFactory.createForClass(BookingTour);

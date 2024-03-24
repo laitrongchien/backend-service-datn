@@ -21,7 +21,7 @@ import { RolesGuard } from '../auth/guards/role.guard';
 export class TourController {
   constructor(private readonly tourService: TourService) {}
 
-  @Get()
+  @Get('all')
   async findAll(
     @Query('page') page: number,
     @Query('limit') limit: number,

@@ -30,6 +30,9 @@ export class MotorbikeRental extends Document {
 
   @Prop()
   totalPrice: number;
+
+  @Prop({ default: 'pending' })
+  status: string;
 }
 
 export const MotorbikeRentalSchema =
