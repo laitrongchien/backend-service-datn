@@ -4,22 +4,16 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  MinLength,
 } from 'class-validator';
 
 export class TourDto {
   @IsNotEmpty()
   @IsString()
-  @MinLength(10)
   name: string;
 
   @IsNotEmpty()
   @IsNumber()
   duration: number;
-
-  @IsNotEmpty()
-  @IsString()
-  difficulty: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -40,7 +34,7 @@ export class TourDto {
   @IsNotEmpty()
   startLocation: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   startDates: Date[];
 
   @IsNotEmpty()

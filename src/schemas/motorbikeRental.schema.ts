@@ -15,6 +15,7 @@ export class MotorbikeRental extends Document {
         startDate: Date,
         finishDate: Date,
         numMotorbikes: Number,
+        identifications: [{ type: String }],
       },
     ],
   })
@@ -23,6 +24,7 @@ export class MotorbikeRental extends Document {
     startDate: Date;
     finishDate: Date;
     numMotorbikes: number;
+    identifications: string[];
   }[];
 
   @Prop({ default: 'payAll' })

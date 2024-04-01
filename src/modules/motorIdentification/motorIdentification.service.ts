@@ -20,6 +20,10 @@ export class MotorIdentificationService {
     return await createdMotorIdentification.save();
   }
 
+  // async updateMotorIdentification() {
+  //   const
+  // }
+
   async getMotorIdentificationById(id: string) {
     return await this.motorIdentificationModel.findById(id);
   }

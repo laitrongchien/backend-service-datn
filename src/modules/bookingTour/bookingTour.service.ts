@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BookingTour } from '../../schemas/bookingTour.schema';
 import { CreateBookingTourDto } from './dto/create-booking-tour.dto';
+import { UpdateBookingTourStatusDto } from './dto/update-booking-tour-status.dto';
 
 @Injectable()
 export class BookingTourService {
@@ -16,8 +17,22 @@ export class BookingTourService {
     return await createdBookingTour.save();
   }
 
+  async updateBookingTourStatus(
+    id: string,
+    updateBookingTourStatus: UpdateBookingTourStatusDto,
+  ) {
+    return await this.bookingTourModel.findByIdAndUpdate(
+      id,
+      { status: updateBookingTourStatus.status },
+      { new: true },
+    );
+  }
+
   async getBookingTourById(id: string) {
-    return await this.bookingTourModel.findById(id);
+    return await this.bookingTourModel
+      .findById(id)
+      .populate({ path: 'tour' })
+      .populate({ path: 'user', select: 'name email' });
   }
 
   async getBookingTourByUser(userId: string) {

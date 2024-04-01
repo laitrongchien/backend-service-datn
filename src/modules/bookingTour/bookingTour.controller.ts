@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Req,
+  Put,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { BookingTourService } from './bookingTour.service';
@@ -13,6 +14,7 @@ import { CreateBookingTourDto } from './dto/create-booking-tour.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
+import { UpdateBookingTourStatusDto } from './dto/update-booking-tour-status.dto';
 
 @Controller('booking')
 export class BookingTourController {
@@ -21,20 +23,33 @@ export class BookingTourController {
   @Get('all')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async findAll() {
+  async getAllBookingTours() {
     return this.bookingTourService.getAllBookingTours();
   }
 
   @Get('/get-booking-tour/:id')
   @UseGuards(JwtAuthGuard)
-  async findOne(@Param('id') id: string) {
+  async getBookingTourById(@Param('id') id: string) {
     return this.bookingTourService.getBookingTourById(id);
   }
 
   @Post('/create-booking-tour')
   @UseGuards(JwtAuthGuard)
-  async create(@Body() createBookingTourDto: CreateBookingTourDto) {
+  async createBookingTour(@Body() createBookingTourDto: CreateBookingTourDto) {
     return this.bookingTourService.createBookingTour(createBookingTourDto);
+  }
+
+  @Put('/update-booking-tour-status/:id')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateBookingTourStatus(
+    @Param('id') id: string,
+    @Body() updateBookingTourStatus: UpdateBookingTourStatusDto,
+  ) {
+    return this.bookingTourService.updateBookingTourStatus(
+      id,
+      updateBookingTourStatus,
+    );
   }
 
   @Get('/get-user-booking-tour')

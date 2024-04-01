@@ -9,8 +9,11 @@ import {
   Req,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { TourService } from './tour.service';
 import { TourDto } from './dto/tour.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -46,21 +49,21 @@ export class TourController {
     return this.tourService.getTourById(id);
   }
 
-  @Post()
+  @Post('/create-tour')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   async create(@Body() createTourDto: TourDto) {
     return this.tourService.createTour(createTourDto);
   }
 
-  @Put(':id')
+  @Put('/update-tour/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   async update(@Param('id') id: string, @Body() updateTourDto: TourDto) {
     return this.tourService.updateTour(id, updateTourDto);
   }
 
-  @Delete(':id')
+  @Delete('delete-tour/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   async delete(@Param('id') id: string) {
@@ -77,5 +80,11 @@ export class TourController {
   @UseGuards(JwtAuthGuard)
   unlikeTour(@Req() req: Request, @Param('id') tourId: string) {
     return this.tourService.unlikeTour(req?.user['sub'], tourId);
+  }
+
+  @Post('upload-image')
+  @UseInterceptors(FileInterceptor('imageCover'))
+  uploadTourImage(@UploadedFile() file: Express.Multer.File) {
+    return this.tourService.uploadTourImage(file);
   }
 }

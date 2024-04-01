@@ -1,9 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Tour } from '../../schemas/tour.schema';
 import { FavoriteTour } from '../../schemas/favoriteTour.schema';
 import { TourDto } from './dto/tour.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class TourService {
@@ -11,9 +17,17 @@ export class TourService {
     @InjectModel(Tour.name) private readonly tourModel: Model<Tour>,
     @InjectModel(FavoriteTour.name)
     private readonly favoriteTourModel: Model<FavoriteTour>,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async createTour(createTourData: TourDto) {
+    const existingTour = await this.tourModel.findOne({
+      name: createTourData.name,
+    });
+
+    if (existingTour) {
+      throw new HttpException('Tour name must be unique', HttpStatus.CONFLICT);
+    }
     const createdTour = new this.tourModel(createTourData);
     return await createdTour.save();
   }
@@ -84,5 +98,16 @@ export class TourService {
       user: userId,
       tour: tourId,
     });
+  }
+
+  async uploadTourImage(file: Express.Multer.File) {
+    try {
+      return await this.cloudinaryService.uploadImage(
+        file,
+        'motortour/images/tour',
+      );
+    } catch (error) {
+      throw new BadRequestException('Invalid file type.');
+    }
   }
 }

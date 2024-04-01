@@ -9,6 +9,9 @@ export class MotorIdentification extends Document {
 
   @Prop({ required: true, type: String })
   identification: string;
+
+  @Prop()
+  performance: string;
 }
 
 export const MotorIdentificationSchema =

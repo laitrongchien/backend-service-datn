@@ -3,18 +3,17 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class Tour extends Document {
-  @Prop({ required: true, unique: true, trim: true, minlength: 10 })
+  @Prop({ required: true, unique: true, trim: true })
   name: string;
 
   @Prop({ required: true })
   duration: number;
 
-  @Prop({ required: true, enum: ['chill', 'moderate', 'challenging'] })
-  difficulty: string;
+  // @Prop({ required: true, enum: ['chill', 'moderate', 'challenging'] })
+  // difficulty: string;
 
   @Prop({
     default: 0,
-    min: 1,
     max: 5,
     set: (val: number) => Math.round(val * 10) / 10,
   })

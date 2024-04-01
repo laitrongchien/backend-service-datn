@@ -9,6 +9,8 @@ import {
   Query,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { MotorbikeService } from './motorbike.service';
@@ -17,6 +19,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateRentalStatusDto } from './dto/update-rental-status.dto';
 
 @Controller('motorbike')
 export class MotorbikeController {
@@ -89,6 +93,12 @@ export class MotorbikeController {
     return this.motorbikeService.unlikeMotorbike(req?.user['sub'], motorbikeId);
   }
 
+  @Post('upload-image')
+  @UseInterceptors(FileInterceptor('image'))
+  uploadTourImage(@UploadedFile() file: Express.Multer.File) {
+    return this.motorbikeService.uploadMotorbikeImage(file);
+  }
+
   @Post('create-rental')
   @UseGuards(JwtAuthGuard)
   rentMotorbike(
@@ -118,5 +128,28 @@ export class MotorbikeController {
   @UseGuards(JwtAuthGuard)
   getMotorbikeRentalDetail(@Param('rentalId') rentalId: string) {
     return this.motorbikeService.getMotorbikeRentalDetail(rentalId);
+  }
+
+  @Put('/update-rental-status/:id')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateRentalStatus(
+    @Param('id') id: string,
+    @Body() updateRentalStatus: UpdateRentalStatusDto,
+  ) {
+    return this.motorbikeService.updateRentalStatus(id, updateRentalStatus);
+  }
+
+  @Put('/update-identifications-rental/:id')
+  // @Roles('admin')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateIdentificationsRental(
+    @Param('id') id: string,
+    @Body('identifications') identifications: string[],
+  ) {
+    return this.motorbikeService.updateIdentificationsRental(
+      id,
+      identifications,
+    );
   }
 }

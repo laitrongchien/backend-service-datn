@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class Motorbike extends Document {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
   @Prop({ required: true })
@@ -11,7 +11,6 @@ export class Motorbike extends Document {
 
   @Prop({
     default: 0,
-    min: 1,
     max: 5,
     set: (val: number) => Math.round(val * 10) / 10,
   })
@@ -26,7 +25,7 @@ export class Motorbike extends Document {
   @Prop({ required: true })
   engine: number;
 
-  @Prop({ required: true })
+  @Prop()
   maxPower: number;
 
   @Prop({ required: true })
@@ -41,7 +40,7 @@ export class Motorbike extends Document {
   @Prop({ required: true })
   fuelCapacity: number;
 
-  @Prop({ required: true })
+  @Prop()
   fuelConsumption: number;
 
   @Prop()

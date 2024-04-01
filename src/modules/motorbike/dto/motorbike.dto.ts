@@ -17,7 +17,7 @@ export class MotorbikeDto {
   @IsNumber()
   engine: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   maxPower: number;
 
@@ -37,7 +37,7 @@ export class MotorbikeDto {
   @IsNumber()
   fuelCapacity: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   fuelConsumption: number;
 

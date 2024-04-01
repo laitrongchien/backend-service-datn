@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Motorbike } from '../../schemas/motorbike.schema';
@@ -6,6 +6,8 @@ import { FavoriteMotorbike } from '../../schemas/favoriteMotorbike.schema';
 import { MotorbikeRental } from 'src/schemas/motorbikeRental.schema';
 import { MotorbikeDto } from './dto/motorbike.dto';
 import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UpdateRentalStatusDto } from './dto/update-rental-status.dto';
 
 @Injectable()
 export class MotorbikeService {
@@ -16,6 +18,7 @@ export class MotorbikeService {
     private readonly favoriteMotorbikeModel: Model<FavoriteMotorbike>,
     @InjectModel(MotorbikeRental.name)
     private readonly motorbikeRentalModel: Model<MotorbikeRental>,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async createMotorbike(createMotorbikeData: MotorbikeDto) {
@@ -103,6 +106,17 @@ export class MotorbikeService {
     });
   }
 
+  async uploadMotorbikeImage(file: Express.Multer.File) {
+    try {
+      return await this.cloudinaryService.uploadImage(
+        file,
+        'motortour/images/motorbike',
+      );
+    } catch (error) {
+      throw new BadRequestException('Invalid file type.');
+    }
+  }
+
   async createRentalMotorbike(
     userId: string,
     createRentalMotorbikeDto: CreateRentalMotorbikeDto,
@@ -132,9 +146,29 @@ export class MotorbikeService {
   }
 
   async getMotorbikeRentalDetail(rentalId: string) {
-    return await this.motorbikeRentalModel.findById(rentalId).populate({
-      path: 'motorbikes',
-      populate: { path: 'motorbike', select: 'name image price' },
-    });
+    return await this.motorbikeRentalModel
+      .findById(rentalId)
+      .populate({
+        path: 'motorbikes',
+        populate: { path: 'motorbike', select: 'name image price' },
+      })
+      .populate({ path: 'user', select: 'name email' });
+  }
+
+  async updateRentalStatus(
+    id: string,
+    updateRentalStatus: UpdateRentalStatusDto,
+  ) {
+    return await this.motorbikeRentalModel.findByIdAndUpdate(
+      id,
+      { status: updateRentalStatus.status },
+      { new: true },
+    );
+  }
+
+  async updateIdentificationsRental(id: string, identifications: string[]) {
+    const rental = await this.motorbikeRentalModel.findById(id);
+    rental.motorbikes[0].identifications = identifications;
+    return await rental.save();
   }
 }
