@@ -12,6 +12,12 @@ export class MotorIdentification extends Document {
 
   @Prop()
   performance: string;
+
+  @Prop({ default: 'normal' })
+  status: string;
+
+  @Prop({ default: false })
+  isUsed: boolean;
 }
 
 export const MotorIdentificationSchema =

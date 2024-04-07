@@ -1,5 +1,6 @@
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TourModule } from './modules/tour/tour.module';
@@ -18,6 +19,7 @@ export const Modules = [
   MongooseModule.forRoot(
     `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.rtqhapw.mongodb.net/motortours?retryWrites=true&w=majority`,
   ),
+  ScheduleModule.forRoot(),
   UserModule,
   AuthModule,
   TourModule,

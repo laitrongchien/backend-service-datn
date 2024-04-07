@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { MotorIdentificationService } from './motorIdentification.service';
 import { CreateMotorIdentificationDto } from './dto/create-motor-identification.dto';
+import { UpdateMotorIdentificationDto } from './dto/update-motor-identification.dto';
 
 @Controller('identification')
 export class MotorIdentificationController {
@@ -33,6 +42,17 @@ export class MotorIdentificationController {
   ) {
     return this.motorIdentificationService.createMotorIdentification(
       createMotorIdentificationDto,
+    );
+  }
+
+  @Put('/update-motor-identification')
+  // @Roles('admin')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateMotorByIdentification(
+    @Body() updateMotorIdentificationData: UpdateMotorIdentificationDto,
+  ) {
+    return this.motorIdentificationService.updateMotorByIdentification(
+      updateMotorIdentificationData,
     );
   }
 }
