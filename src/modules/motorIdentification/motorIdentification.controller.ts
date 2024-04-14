@@ -34,6 +34,17 @@ export class MotorIdentificationController {
     return this.motorIdentificationService.getMotorIdentificationById(id);
   }
 
+  @Get('/get-motor-by-identification/:identification')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getMotorByIdentification(
+    @Param('identification') identification: string,
+  ) {
+    return this.motorIdentificationService.getMotorByIdentification(
+      identification,
+    );
+  }
+
   @Post('/create-motor-identification')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)

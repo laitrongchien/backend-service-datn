@@ -4,10 +4,14 @@ import { Model } from 'mongoose';
 import { MotorIdentification } from 'src/schemas/motorIdentification.schema';
 import { CreateMotorIdentificationDto } from './dto/create-motor-identification.dto';
 import { UpdateMotorIdentificationDto } from './dto/update-motor-identification.dto';
-// import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { PythonShell } from 'python-shell';
+import * as path from 'path';
 
 @Injectable()
 export class MotorIdentificationService {
+  private model: any;
+
   constructor(
     @InjectModel(MotorIdentification.name)
     private readonly motorIdentificationModel: Model<MotorIdentification>,
@@ -36,14 +40,47 @@ export class MotorIdentificationService {
     return await this.motorIdentificationModel.findById(id);
   }
 
+  async getMotorByIdentification(identification: string) {
+    return await this.motorIdentificationModel.findOne({
+      identification: identification,
+    });
+  }
+
   async getAllMotorIdentifications() {
     return await this.motorIdentificationModel
       .find()
       .populate({ path: 'motorbike', select: 'name' });
   }
 
-  // @Cron(CronExpression.EVERY_MINUTE)
-  // async calculateMotorPerformance() {
-  //   console.log('calculate');
-  // }
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  async calculateMotorPerformance() {
+    console.log('calculate');
+    const motorIdentifications = await this.motorIdentificationModel.find();
+
+    motorIdentifications.forEach(async (motorIdentification: any) => {
+      const data = motorIdentification.toObject();
+      // console.log(data);
+      const inputData = [[data.km_driven, data.prev_broken, data.model_age]];
+      const scriptPath = path.join(
+        __dirname,
+        '../../../src/scripts/load_model.py',
+      );
+
+      let performanceValue = '';
+
+      PythonShell.run(scriptPath, {
+        args: [JSON.stringify(inputData)],
+        pythonOptions: ['-u'],
+      }).then(async (results) => {
+        performanceValue =
+          results[0] === '0' ? 'good' : results[0] === '1' ? 'medium' : 'bad';
+        // console.log(results);
+        await this.motorIdentificationModel.findByIdAndUpdate(
+          motorIdentification._id,
+          { performance: performanceValue },
+          { new: true },
+        );
+      });
+    });
+  }
 }
