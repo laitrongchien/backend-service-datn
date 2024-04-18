@@ -42,6 +42,7 @@ export class BookingTourService {
   async getAllBookingTours() {
     return await this.bookingTourModel
       .find()
+      .sort({ createdAt: -1 })
       .populate({ path: 'user', select: 'name email' });
   }
 }

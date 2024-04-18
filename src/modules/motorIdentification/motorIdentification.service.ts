@@ -52,7 +52,7 @@ export class MotorIdentificationService {
       .populate({ path: 'motorbike', select: 'name' });
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron(CronExpression.EVERY_MINUTE)
   async calculateMotorPerformance() {
     console.log('calculate');
     const motorIdentifications = await this.motorIdentificationModel.find();
@@ -74,7 +74,7 @@ export class MotorIdentificationService {
       }).then(async (results) => {
         performanceValue =
           results[0] === '0' ? 'good' : results[0] === '1' ? 'medium' : 'bad';
-        // console.log(results);
+        console.log(performanceValue);
         await this.motorIdentificationModel.findByIdAndUpdate(
           motorIdentification._id,
           { performance: performanceValue },
