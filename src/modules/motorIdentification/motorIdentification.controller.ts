@@ -45,6 +45,13 @@ export class MotorIdentificationController {
     );
   }
 
+  @Get('/get-all-available-motor/:motorbikeId')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getAllAvailbleMotor(@Param('motorbikeId') motorbikeId: string) {
+    return this.motorIdentificationService.getAllAvailableMotor(motorbikeId);
+  }
+
   @Post('/create-motor-identification')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
