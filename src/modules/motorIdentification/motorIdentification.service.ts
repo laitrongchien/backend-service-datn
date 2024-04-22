@@ -23,17 +23,29 @@ export class MotorIdentificationService {
     const createdMotorIdentification = new this.motorIdentificationModel(
       createMotorIdentificationData,
     );
-    return await createdMotorIdentification.save();
+    return (await createdMotorIdentification.save()).populate({
+      path: 'motorbike',
+      select: 'name',
+    });
   }
 
   async updateMotorByIdentification(
     updateMotorIdentificationData: UpdateMotorIdentificationDto,
   ) {
-    return await this.motorIdentificationModel.findOneAndUpdate(
-      { identification: updateMotorIdentificationData.identification },
-      updateMotorIdentificationData,
-      { new: true },
-    );
+    return await this.motorIdentificationModel
+      .findOneAndUpdate(
+        { identification: updateMotorIdentificationData.identification },
+        updateMotorIdentificationData,
+        { new: true },
+      )
+      .populate({
+        path: 'motorbike',
+        select: 'name',
+      });
+  }
+
+  async deleteMotorIdentification(id: string) {
+    return await this.motorIdentificationModel.findByIdAndDelete(id);
   }
 
   async getMotorIdentificationById(id: string) {

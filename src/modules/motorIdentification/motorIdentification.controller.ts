@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Put,
+  Delete,
   Param,
   UseGuards,
 } from '@nestjs/common';
@@ -64,13 +65,20 @@ export class MotorIdentificationController {
   }
 
   @Put('/update-motor-identification')
-  // @Roles('admin')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async updateMotorByIdentification(
     @Body() updateMotorIdentificationData: UpdateMotorIdentificationDto,
   ) {
     return this.motorIdentificationService.updateMotorByIdentification(
       updateMotorIdentificationData,
     );
+  }
+
+  @Delete('/delete-motor-identification/:id')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async deleteMotorByIdentification(@Param('id') id: string) {
+    return this.motorIdentificationService.deleteMotorIdentification(id);
   }
 }

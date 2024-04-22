@@ -11,6 +11,15 @@ export class MotorIdentification extends Document {
   identification: string;
 
   @Prop()
+  model_year: number;
+
+  @Prop()
+  km_driven: number;
+
+  @Prop()
+  prev_broken: number;
+
+  @Prop({ default: 'good' })
   performance: string;
 
   @Prop({ default: 'normal' })
