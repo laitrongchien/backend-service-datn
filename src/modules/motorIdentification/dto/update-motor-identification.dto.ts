@@ -21,7 +21,23 @@ export class UpdateMotorIdentificationDto {
 
   @IsOptional()
   @IsNumber()
-  prev_broken: number;
+  engine_failures: number;
+
+  @IsOptional()
+  @IsNumber()
+  frame_failures: number;
+
+  @IsOptional()
+  @IsNumber()
+  brake_failures: number;
+
+  @IsOptional()
+  @IsNumber()
+  tire_failures: number;
+
+  @IsOptional()
+  @IsNumber()
+  other_failures: number;
 
   @IsOptional()
   @IsString()

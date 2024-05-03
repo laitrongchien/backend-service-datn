@@ -19,5 +19,21 @@ export class CreateMotorIdentificationDto {
 
   @IsNotEmpty()
   @IsNumber()
-  prev_broken: number;
+  engine_failures: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  frame_failures: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  brake_failures: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  tire_failures: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  other_failures: number;
 }

@@ -29,6 +29,23 @@ export class MotorIdentificationService {
     });
   }
 
+  async importMotorIdentification(
+    importMotorIdentificationData: CreateMotorIdentificationDto[],
+  ) {
+    const createdMotorIdentifications = importMotorIdentificationData.map(
+      (data) => new this.motorIdentificationModel(data),
+    );
+    const savedMotorIdentifications = await Promise.all(
+      createdMotorIdentifications.map(async (motorIdentification) =>
+        (await motorIdentification.save()).populate({
+          path: 'motorbike',
+          select: 'name',
+        }),
+      ),
+    );
+    return savedMotorIdentifications;
+  }
+
   async updateMotorByIdentification(
     updateMotorIdentificationData: UpdateMotorIdentificationDto,
   ) {
@@ -81,7 +98,20 @@ export class MotorIdentificationService {
     // motorIdentifications.forEach(async (motorIdentification: any) => {
     //   const data = motorIdentification.toObject();
     //   // console.log(data);
-    //   const inputData = [[data.km_driven, data.prev_broken, data.model_age]];
+    //   const overall_failure =
+    //     (data.engine_failures * 0.8 +
+    //       data.frame_failures * 0.6 +
+    //       data.brake_failures * 0.4 +
+    //       data.tire_failures * 0.2 +
+    //       data.other_failures * 0.1) /
+    //     (data.engine_failures +
+    //       data.frame_failures +
+    //       data.brake_failures +
+    //       data.tire_failures +
+    //       data.other_failures);
+    //   const inputData = [
+    //     [data.km_driven, overall_failure, 2024 - data.model_year],
+    //   ];
     //   const scriptPath = path.join(
     //     __dirname,
     //     '../../../src/scripts/load_model.py',

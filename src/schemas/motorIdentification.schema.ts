@@ -17,7 +17,19 @@ export class MotorIdentification extends Document {
   km_driven: number;
 
   @Prop()
-  prev_broken: number;
+  engine_failures: number;
+
+  @Prop()
+  frame_failures: number;
+
+  @Prop()
+  brake_failures: number;
+
+  @Prop()
+  tire_failures: number;
+
+  @Prop()
+  other_failures: number;
 
   @Prop({ default: 'good' })
   performance: string;

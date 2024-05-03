@@ -64,6 +64,17 @@ export class MotorIdentificationController {
     );
   }
 
+  @Post('/import-motor-identification')
+  // @Roles('admin')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  async importMotorIdentification(
+    @Body() importMotorIdentificationData: CreateMotorIdentificationDto[],
+  ) {
+    return this.motorIdentificationService.importMotorIdentification(
+      importMotorIdentificationData,
+    );
+  }
+
   @Put('/update-motor-identification')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
