@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Repair } from 'src/schemas/repair.schema';
 import { CreateRepairMotorbikeDto } from './dto/create-repair-motorbike.dto';
+import { UpdateRepairMotorbikeDto } from './dto/update-repair-motorbike.dto';
 
 @Injectable()
 export class RepairService {
@@ -18,6 +19,19 @@ export class RepairService {
   }
 
   async getAllRepairs() {
-    return await this.repairModel.find();
+    return await this.repairModel.find().sort({ createdAt: -1 });
+  }
+
+  async updateRepairMotorbike(
+    id: string,
+    updateRepairMotorbikeData: UpdateRepairMotorbikeDto,
+  ) {
+    return await this.repairModel.findByIdAndUpdate(
+      id,
+      updateRepairMotorbikeData,
+      {
+        new: true,
+      },
+    );
   }
 }
