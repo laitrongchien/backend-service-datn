@@ -5,8 +5,8 @@ import { MotorIdentification } from 'src/schemas/motorIdentification.schema';
 import { CreateMotorIdentificationDto } from './dto/create-motor-identification.dto';
 import { UpdateMotorIdentificationDto } from './dto/update-motor-identification.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { PythonShell } from 'python-shell';
-import * as path from 'path';
+// import { PythonShell } from 'python-shell';
+// import * as path from 'path';
 
 @Injectable()
 export class MotorIdentificationService {
@@ -93,45 +93,45 @@ export class MotorIdentificationService {
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async calculateMotorPerformance() {
     console.log('calculate');
-    const motorIdentifications = await this.motorIdentificationModel.find();
+    // const motorIdentifications = await this.motorIdentificationModel.find();
 
-    motorIdentifications.forEach(async (motorIdentification: any) => {
-      const data = motorIdentification.toObject();
-      // console.log(data);
-      const overall_failure =
-        (data.engine_failures * 0.8 +
-          data.frame_failures * 0.6 +
-          data.brake_failures * 0.4 +
-          data.tire_failures * 0.2 +
-          data.other_failures * 0.1) /
-        (data.engine_failures +
-          data.frame_failures +
-          data.brake_failures +
-          data.tire_failures +
-          data.other_failures);
-      const inputData = [
-        [data.km_driven, overall_failure, 2024 - data.model_year],
-      ];
-      const scriptPath = path.join(
-        __dirname,
-        '../../../src/scripts/load_model.py',
-      );
+    // motorIdentifications.forEach(async (motorIdentification: any) => {
+    //   const data = motorIdentification.toObject();
+    //   // console.log(data);
+    //   const overall_failure =
+    //     (data.engine_failures * 0.8 +
+    //       data.frame_failures * 0.6 +
+    //       data.brake_failures * 0.4 +
+    //       data.tire_failures * 0.2 +
+    //       data.other_failures * 0.1) /
+    //     (data.engine_failures +
+    //       data.frame_failures +
+    //       data.brake_failures +
+    //       data.tire_failures +
+    //       data.other_failures);
+    //   const inputData = [
+    //     [data.km_driven, overall_failure, 2024 - data.model_year],
+    //   ];
+    //   const scriptPath = path.join(
+    //     __dirname,
+    //     '../../../src/scripts/load_model.py',
+    //   );
 
-      let performanceValue = '';
+    //   let performanceValue = '';
 
-      PythonShell.run(scriptPath, {
-        args: [JSON.stringify(inputData)],
-        pythonOptions: ['-u'],
-      }).then(async (results) => {
-        performanceValue =
-          results[0] === '0' ? 'good' : results[0] === '1' ? 'medium' : 'bad';
-        console.log(performanceValue);
-        await this.motorIdentificationModel.findByIdAndUpdate(
-          motorIdentification._id,
-          { performance: performanceValue },
-          { new: true },
-        );
-      });
-    });
+    //   PythonShell.run(scriptPath, {
+    //     args: [JSON.stringify(inputData)],
+    //     pythonOptions: ['-u'],
+    //   }).then(async (results) => {
+    //     performanceValue =
+    //       results[0] === '0' ? 'good' : results[0] === '1' ? 'medium' : 'bad';
+    //     console.log(performanceValue);
+    //     await this.motorIdentificationModel.findByIdAndUpdate(
+    //       motorIdentification._id,
+    //       { performance: performanceValue },
+    //       { new: true },
+    //     );
+    //   });
+    // });
   }
 }
