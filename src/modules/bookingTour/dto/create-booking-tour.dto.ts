@@ -8,7 +8,7 @@ export class CreateBookingTourDto {
   @IsNotEmpty()
   user: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   phone: string;
 

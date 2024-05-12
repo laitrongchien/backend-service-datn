@@ -4,6 +4,7 @@ import {
   IsMongoId,
   IsArray,
   IsString,
+  IsNotEmpty,
 } from 'class-validator';
 
 class MotorbikeRentalDto {
@@ -25,6 +26,11 @@ export class CreateRentalMotorbikeDto {
   motorbikes: MotorbikeRentalDto[];
 
   @IsString()
+  @IsNotEmpty()
+  phone: string;
+
+  @IsString()
+  @IsNotEmpty()
   paymentType: string;
 
   @IsNumber()

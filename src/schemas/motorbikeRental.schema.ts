@@ -8,6 +8,9 @@ export class MotorbikeRental extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   user: User;
 
+  @Prop()
+  phone: string;
+
   @Prop({
     type: [
       {

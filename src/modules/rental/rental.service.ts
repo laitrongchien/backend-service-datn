@@ -18,6 +18,7 @@ export class RentalService {
   ) {
     const newRental = new this.motorbikeRentalModel({
       user: userId,
+      phone: createRentalMotorbikeDto.phone,
       motorbikes: createRentalMotorbikeDto.motorbikes,
       paymentType: createRentalMotorbikeDto.paymentType,
       totalPrice: createRentalMotorbikeDto.totalPrice,
