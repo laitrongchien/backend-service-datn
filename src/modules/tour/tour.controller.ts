@@ -29,8 +29,18 @@ export class TourController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('userId') userId?: string,
+    @Query('startLocation') startLocation?: string,
+    @Query('minDuration') minDuration?: number,
+    @Query('maxDuration') maxDuration?: number,
   ) {
-    return this.tourService.getAllTours(page, limit, userId);
+    return this.tourService.getAllTours(
+      page,
+      limit,
+      userId,
+      startLocation,
+      minDuration,
+      maxDuration,
+    );
   }
 
   @Get('/popular-tours')

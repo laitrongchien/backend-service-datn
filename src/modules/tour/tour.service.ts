@@ -36,9 +36,29 @@ export class TourService {
     return await this.tourModel.findById(id);
   }
 
-  async getAllTours(page: number, limit: number, userId: string) {
+  async getAllTours(
+    page: number,
+    limit: number,
+    userId: string,
+    startLocation: string,
+    minDuration: number,
+    maxDuration: number,
+  ) {
     const skip = (page - 1) * limit;
-    const findTours = await this.tourModel.find().skip(skip).limit(limit);
+    let query: any = startLocation ? { startLocation } : {};
+    if (minDuration) {
+      if (maxDuration)
+        query = {
+          ...query,
+          duration: { $gte: minDuration, $lte: maxDuration },
+        };
+      else
+        query = {
+          ...query,
+          duration: { $gte: minDuration },
+        };
+    }
+    const findTours = await this.tourModel.find(query).skip(skip).limit(limit);
     const tours = await Promise.all(
       findTours.map(async (tour) => {
         const favorite = await this.favoriteTourModel.findOne({
@@ -51,7 +71,7 @@ export class TourService {
         return tour;
       }),
     );
-    const totalTours = await this.tourModel.countDocuments();
+    const totalTours = await this.tourModel.countDocuments(query);
     const totalPages = Math.ceil(totalTours / limit);
     return { tours, totalPages };
   }
