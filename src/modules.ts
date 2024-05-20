@@ -12,6 +12,7 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { ReviewModule } from './modules/review/review.module';
 import { MotorIdentificationModule } from './modules/motorIdentification/motorIdentification.module';
 import { RepairModule } from './modules/repair/repair.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 export const Modules = [
   ConfigModule.forRoot({
@@ -33,4 +34,5 @@ export const Modules = [
   ReviewModule,
   MotorIdentificationModule,
   RepairModule,
+  NotificationModule,
 ];

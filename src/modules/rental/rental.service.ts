@@ -4,12 +4,14 @@ import { Model } from 'mongoose';
 import { MotorbikeRental } from 'src/schemas/motorbikeRental.schema';
 import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
 import { UpdateRentalStatusDto } from './dto/update-rental-status.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class RentalService {
   constructor(
     @InjectModel(MotorbikeRental.name)
     private readonly motorbikeRentalModel: Model<MotorbikeRental>,
+    private notificationService: NotificationService,
   ) {}
 
   async createRentalMotorbike(
@@ -22,6 +24,11 @@ export class RentalService {
       motorbikes: createRentalMotorbikeDto.motorbikes,
       paymentType: createRentalMotorbikeDto.paymentType,
       totalPrice: createRentalMotorbikeDto.totalPrice,
+    });
+    await this.notificationService.sendNotification({
+      user: userId,
+      message: 'Đơn thuê xe mới',
+      notificationType: 'motor-rental',
     });
     return await newRental.save();
   }

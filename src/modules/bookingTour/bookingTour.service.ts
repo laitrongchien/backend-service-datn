@@ -4,16 +4,23 @@ import { Model } from 'mongoose';
 import { BookingTour } from '../../schemas/bookingTour.schema';
 import { CreateBookingTourDto } from './dto/create-booking-tour.dto';
 import { UpdateBookingTourStatusDto } from './dto/update-booking-tour-status.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class BookingTourService {
   constructor(
     @InjectModel(BookingTour.name)
     private readonly bookingTourModel: Model<BookingTour>,
+    private notificationService: NotificationService,
   ) {}
 
   async createBookingTour(createBookingTourData: CreateBookingTourDto) {
     const createdBookingTour = new this.bookingTourModel(createBookingTourData);
+    await this.notificationService.sendNotification({
+      user: createBookingTourData.user,
+      message: 'Đơn đặt tour mới',
+      notificationType: 'tour-booking',
+    });
     return await createdBookingTour.save();
   }
 
