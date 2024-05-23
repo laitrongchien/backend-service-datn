@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { MotorbikeRental } from 'src/schemas/motorbikeRental.schema';
 import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
 import { UpdateRentalStatusDto } from './dto/update-rental-status.dto';
+import { UpdateExtraFeeDto } from './dto/update-extra-fee.dto';
 import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
@@ -65,6 +66,14 @@ export class RentalService {
     return await this.motorbikeRentalModel.findByIdAndUpdate(
       id,
       { status: updateRentalStatus.status },
+      { new: true },
+    );
+  }
+
+  async updateExtraFee(id: string, updateExtraFeeData: UpdateExtraFeeDto) {
+    return await this.motorbikeRentalModel.findByIdAndUpdate(
+      id,
+      updateExtraFeeData,
       { new: true },
     );
   }

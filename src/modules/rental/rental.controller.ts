@@ -15,6 +15,7 @@ import { RolesGuard } from '../auth/guards/role.guard';
 import { RentalService } from './rental.service';
 import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
 import { UpdateRentalStatusDto } from './dto/update-rental-status.dto';
+import { UpdateExtraFeeDto } from './dto/update-extra-fee.dto';
 
 @Controller('rental')
 export class RentalController {
@@ -60,9 +61,19 @@ export class RentalController {
     return this.rentalService.updateRentalStatus(id, updateRentalStatus);
   }
 
+  @Put('/update-rental-extra-fee/:id')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateRentalExtraFee(
+    @Param('id') id: string,
+    @Body() updateExtraFeeData: UpdateExtraFeeDto,
+  ) {
+    return this.rentalService.updateExtraFee(id, updateExtraFeeData);
+  }
+
   @Put('/update-identifications-rental/:id')
-  // @Roles('admin')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async updateIdentificationsRental(
     @Param('id') id: string,
     @Body('identifications') identifications: string[],
