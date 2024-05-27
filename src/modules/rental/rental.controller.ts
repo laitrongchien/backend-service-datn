@@ -22,7 +22,7 @@ export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
   @Post('create-rental')
   @UseGuards(JwtAuthGuard)
-  rentMotorbike(
+  createRentalMotorbike(
     @Req() req: Request,
     @Body() createRentalMotorbikeDto: CreateRentalMotorbikeDto,
   ) {

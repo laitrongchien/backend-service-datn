@@ -25,7 +25,7 @@ export class MotorbikeController {
   constructor(private readonly motorbikeService: MotorbikeService) {}
 
   @Get('/all')
-  async findAll(
+  async findAllMotorbikes(
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('userId') userId?: string,
@@ -58,14 +58,14 @@ export class MotorbikeController {
   @Post('/create-motorbike')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async create(@Body() createMotorbikeDto: MotorbikeDto) {
+  async createMotorbike(@Body() createMotorbikeDto: MotorbikeDto) {
     return this.motorbikeService.createMotorbike(createMotorbikeDto);
   }
 
   @Put('/update-motorbike/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async update(
+  async updateMotorbike(
     @Param('id') id: string,
     @Body() updateMotorbikeDto: MotorbikeDto,
   ) {
@@ -75,7 +75,7 @@ export class MotorbikeController {
   @Delete('delete-motorbike/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async delete(@Param('id') id: string) {
+  async deleteMotorbike(@Param('id') id: string) {
     return this.motorbikeService.deleteMotorbike(id);
   }
 
@@ -93,7 +93,7 @@ export class MotorbikeController {
 
   @Post('upload-image')
   @UseInterceptors(FileInterceptor('image'))
-  uploadTourImage(@UploadedFile() file: Express.Multer.File) {
+  uploadMotorbikeImage(@UploadedFile() file: Express.Multer.File) {
     return this.motorbikeService.uploadMotorbikeImage(file);
   }
 }
