@@ -31,6 +31,10 @@ export class CreateRentalMotorbikeDto {
 
   @IsString()
   @IsNotEmpty()
+  location: string;
+
+  @IsString()
+  @IsNotEmpty()
   paymentType: string;
 
   @IsNumber()

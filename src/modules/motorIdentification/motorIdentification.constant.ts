@@ -1,0 +1,5 @@
+export const VERY_SERIOUS_FAILURE_IMPACT = 5;
+export const SERIOUS_FAILURE_IMPACT = 4;
+export const QUITE_SERIOUS_FAILURE_IMPACT = 3;
+export const MEDIUM_FAILURE_IMPACT = 2;
+export const MINOR_FAILURE_IMPACT = 1;

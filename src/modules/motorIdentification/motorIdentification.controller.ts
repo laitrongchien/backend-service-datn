@@ -5,6 +5,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
   Param,
   UseGuards,
 } from '@nestjs/common';
@@ -49,8 +50,14 @@ export class MotorIdentificationController {
   @Get('/get-all-available-motor/:motorbikeId')
   // @Roles('admin')
   // @UseGuards(JwtAuthGuard, RolesGuard)
-  async getAllAvailbleMotor(@Param('motorbikeId') motorbikeId: string) {
-    return this.motorIdentificationService.getAllAvailableMotor(motorbikeId);
+  async getAllAvailbleMotor(
+    @Param('motorbikeId') motorbikeId: string,
+    @Query('location') location: string,
+  ) {
+    return this.motorIdentificationService.getAllAvailableMotor(
+      motorbikeId,
+      location,
+    );
   }
 
   @Post('/create-motor-identification')

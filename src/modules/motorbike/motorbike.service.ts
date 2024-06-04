@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Motorbike } from '../../schemas/motorbike.schema';
 import { FavoriteMotorbike } from '../../schemas/favoriteMotorbike.schema';
+import { MotorIdentification } from '../../schemas/motorIdentification.schema';
 import { MotorbikeDto } from './dto/motorbike.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
@@ -13,6 +14,8 @@ export class MotorbikeService {
     private readonly motorbikeModel: Model<Motorbike>,
     @InjectModel(FavoriteMotorbike.name)
     private readonly favoriteMotorbikeModel: Model<FavoriteMotorbike>,
+    @InjectModel(MotorIdentification.name)
+    private readonly motorIdentificationModel: Model<MotorIdentification>,
     private cloudinaryService: CloudinaryService,
   ) {}
 
@@ -44,10 +47,14 @@ export class MotorbikeService {
           motorbike: motorbike._id,
           user: userId,
         });
+        const numOfMotorIdentifications =
+          await this.motorIdentificationModel.countDocuments({
+            motorbike: motorbike._id,
+          });
 
         motorbike.isFavorite = !!favorite;
 
-        return motorbike;
+        return { ...motorbike.toObject(), numOfMotorIdentifications };
       }),
     );
     const totalMotorbikes =

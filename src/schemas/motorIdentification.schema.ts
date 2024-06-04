@@ -7,6 +7,9 @@ export class MotorIdentification extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Motorbike' })
   motorbike: Motorbike;
 
+  @Prop({ type: String })
+  location: string;
+
   @Prop({ required: true, type: String })
   identification: string;
 
@@ -17,19 +20,19 @@ export class MotorIdentification extends Document {
   km_driven: number;
 
   @Prop()
-  engine_failures: number;
+  very_serious_failures: number;
 
   @Prop()
-  frame_failures: number;
+  serious_failures: number;
 
   @Prop()
-  brake_failures: number;
+  quite_serious_failures: number;
 
   @Prop()
-  tire_failures: number;
+  medium_failures: number;
 
   @Prop()
-  other_failures: number;
+  minor_failures: number;
 
   @Prop({ default: 'good' })
   performance: string;

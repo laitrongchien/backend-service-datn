@@ -7,6 +7,10 @@ export class CreateMotorIdentificationDto {
 
   @IsNotEmpty()
   @IsString()
+  location: string;
+
+  @IsNotEmpty()
+  @IsString()
   identification: string;
 
   @IsNotEmpty()
@@ -19,21 +23,21 @@ export class CreateMotorIdentificationDto {
 
   @IsNotEmpty()
   @IsNumber()
-  engine_failures: number;
+  very_serious_failures: number;
 
   @IsNotEmpty()
   @IsNumber()
-  frame_failures: number;
+  serious_failures: number;
 
   @IsNotEmpty()
   @IsNumber()
-  brake_failures: number;
+  quite_serious_failures: number;
 
   @IsNotEmpty()
   @IsNumber()
-  tire_failures: number;
+  medium_failures: number;
 
   @IsNotEmpty()
   @IsNumber()
-  other_failures: number;
+  minor_failures: number;
 }

@@ -12,6 +12,10 @@ export class UpdateMotorIdentificationDto {
   identification: string;
 
   @IsOptional()
+  @IsString()
+  location: string;
+
+  @IsOptional()
   @IsNumber()
   model_year: number;
 
@@ -21,23 +25,23 @@ export class UpdateMotorIdentificationDto {
 
   @IsOptional()
   @IsNumber()
-  engine_failures: number;
+  very_serious_failures: number;
 
   @IsOptional()
   @IsNumber()
-  frame_failures: number;
+  serious_failures: number;
 
   @IsOptional()
   @IsNumber()
-  brake_failures: number;
+  quite_serious_failures: number;
 
   @IsOptional()
   @IsNumber()
-  tire_failures: number;
+  medium_failures: number;
 
   @IsOptional()
   @IsNumber()
-  other_failures: number;
+  minor_failures: number;
 
   @IsOptional()
   @IsString()

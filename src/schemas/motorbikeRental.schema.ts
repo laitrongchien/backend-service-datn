@@ -30,6 +30,9 @@ export class MotorbikeRental extends Document {
     identifications: string[];
   }[];
 
+  @Prop({ type: String })
+  location: string;
+
   @Prop({ default: 'payAll' })
   paymentType: string;
 
