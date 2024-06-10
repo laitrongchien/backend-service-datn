@@ -14,6 +14,7 @@ import { MotorIdentificationModule } from './modules/motorIdentification/motorId
 import { RepairModule } from './modules/repair/repair.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { LocationModule } from './modules/location/location.module';
+import { GeminiModule } from './modules/gemini/gemini.module';
 
 export const Modules = [
   ConfigModule.forRoot({
@@ -37,4 +38,5 @@ export const Modules = [
   RepairModule,
   NotificationModule,
   LocationModule,
+  GeminiModule,
 ];
