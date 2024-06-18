@@ -19,13 +19,14 @@ import { TourDto } from './dto/tour.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { RolesGuard } from '../auth/guards/role.guard';
+import { CreateSelfTourDto } from './dto/create-self-tour.dto';
 
 @Controller('tour')
 export class TourController {
   constructor(private readonly tourService: TourService) {}
 
   @Get('all')
-  async findAll(
+  async findAllTours(
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('userId') userId?: string,
@@ -43,6 +44,12 @@ export class TourController {
     );
   }
 
+  @Get('all-self-tours')
+  @UseGuards(JwtAuthGuard)
+  async getAllSelfTours(@Req() req: Request) {
+    return this.tourService.getAllSelfTours(req?.user['sub']);
+  }
+
   @Get('/popular-tours')
   async findPopularTours() {
     return this.tourService.getPopularTours();
@@ -55,28 +62,45 @@ export class TourController {
   }
 
   @Get('/get-tour/:id')
-  async findOne(@Param('id') id: string) {
+  async findTourById(@Param('id') id: string) {
     return this.tourService.getTourById(id);
+  }
+
+  @Get('/get-self-tour/:id')
+  async findSelfTourById(@Param('id') id: string) {
+    return this.tourService.getSelfTourById(id);
   }
 
   @Post('/create-tour')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async create(@Body() createTourDto: TourDto) {
+  async createTour(@Body() createTourDto: TourDto) {
     return this.tourService.createTour(createTourDto);
+  }
+
+  @Post('/create-self-tour')
+  @UseGuards(JwtAuthGuard)
+  async createSelfTour(
+    @Req() req: Request,
+    @Body() createSelfTourDto: CreateSelfTourDto,
+  ) {
+    return this.tourService.createSelfTour(req?.user['sub'], createSelfTourDto);
   }
 
   @Put('/update-tour/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async update(@Param('id') id: string, @Body() updateTourDto: TourDto) {
+  async updateTourById(
+    @Param('id') id: string,
+    @Body() updateTourDto: TourDto,
+  ) {
     return this.tourService.updateTour(id, updateTourDto);
   }
 
   @Delete('delete-tour/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async delete(@Param('id') id: string) {
+  async deleteTourById(@Param('id') id: string) {
     return this.tourService.deleteTour(id);
   }
 

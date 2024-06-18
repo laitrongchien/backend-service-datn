@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ReviewService } from './review.service';
 import { ReviewTourDto } from './dto/review-tour.dto';
@@ -9,13 +17,21 @@ export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
   @Get('/get-reviews-by-tour/:id')
-  async getReviewsByTour(@Param('id') tourId: string) {
-    return this.reviewService.getReviewsByTour(tourId);
+  async getReviewsByTour(
+    @Param('id') tourId: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return this.reviewService.getReviewsByTour(tourId, page, limit);
   }
 
   @Get('/get-reviews-by-motorbike/:id')
-  async getReviewsByMotorbike(@Param('id') motorbikeId: string) {
-    return this.reviewService.getReviewsByMotorbike(motorbikeId);
+  async getReviewsByMotorbike(
+    @Param('id') motorbikeId: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return this.reviewService.getReviewsByMotorbike(motorbikeId, page, limit);
   }
 
   @Post('/create-review-tour')

@@ -8,8 +8,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Tour } from '../../schemas/tour.schema';
 import { FavoriteTour } from '../../schemas/favoriteTour.schema';
+import { SelfTour } from '../../schemas/selfTour.schema';
 import { TourDto } from './dto/tour.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { CreateSelfTourDto } from './dto/create-self-tour.dto';
 
 @Injectable()
 export class TourService {
@@ -17,6 +19,7 @@ export class TourService {
     @InjectModel(Tour.name) private readonly tourModel: Model<Tour>,
     @InjectModel(FavoriteTour.name)
     private readonly favoriteTourModel: Model<FavoriteTour>,
+    @InjectModel(SelfTour.name) private readonly selfTourModel: Model<SelfTour>,
     private cloudinaryService: CloudinaryService,
   ) {}
 
@@ -30,6 +33,21 @@ export class TourService {
     }
     const createdTour = new this.tourModel(createTourData);
     return await createdTour.save();
+  }
+
+  async createSelfTour(userId: string, createSelfTourDto: CreateSelfTourDto) {
+    return await new this.selfTourModel({
+      user: userId,
+      ...createSelfTourDto,
+    }).save();
+  }
+
+  async getAllSelfTours(userId: string) {
+    return await this.selfTourModel.find({ user: userId });
+  }
+
+  async getSelfTourById(id: string) {
+    return await this.selfTourModel.findById(id);
   }
 
   async getTourById(id: string) {

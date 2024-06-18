@@ -15,20 +15,39 @@ export class ReviewService {
     private readonly reviewMotorbikeModel: Model<ReviewMotorbike>,
   ) {}
 
-  async getReviewsByTour(tourId: string) {
-    return await this.reviewTourModel
+  async getReviewsByTour(tourId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const tourReviews = await this.reviewTourModel
       .find({ tour: tourId })
       .sort({ createdAt: -1 })
-      .limit(5)
+      .skip(skip)
+      .limit(limit)
       .populate({ path: 'user', select: 'name avatar' });
+
+    const totalTourReviews = await this.reviewTourModel.countDocuments({
+      tour: tourId,
+    });
+    const totalPages = Math.ceil(totalTourReviews / limit);
+    return { tourReviews, totalPages };
   }
 
-  async getReviewsByMotorbike(motorbikeId: string) {
-    return await this.reviewMotorbikeModel
+  async getReviewsByMotorbike(
+    motorbikeId: string,
+    page: number,
+    limit: number,
+  ) {
+    const skip = (page - 1) * limit;
+    const motorReviews = await this.reviewMotorbikeModel
       .find({ motorbike: motorbikeId })
       .sort({ createdAt: -1 })
-      .limit(5)
+      .skip(skip)
+      .limit(limit)
       .populate({ path: 'user', select: 'name avatar' });
+    const totalMotorReviews = await this.reviewMotorbikeModel.countDocuments({
+      motorbike: motorbikeId,
+    });
+    const totalPages = Math.ceil(totalMotorReviews / limit);
+    return { motorReviews, totalPages };
   }
 
   async getReviewByUserAndTour(userId: string, tourId: string) {
