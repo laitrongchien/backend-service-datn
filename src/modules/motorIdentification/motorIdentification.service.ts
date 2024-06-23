@@ -140,7 +140,7 @@ export class MotorIdentificationService {
     // });
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_DAY_AT_3PM)
   async calculateWhenMaintain() {
     console.log('calculate');
     const motorIdentifications = await this.motorIdentificationModel
