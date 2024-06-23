@@ -6,7 +6,7 @@ export class Motorbike extends Document {
   @Prop({ required: true, unique: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop()
   description: string;
 
   @Prop({
@@ -48,6 +48,13 @@ export class Motorbike extends Document {
 
   @Prop()
   isFavorite: boolean;
+
+  @Prop({ default: [] })
+  maintainSchedule: Array<{
+    type: string;
+    quantity: number;
+    unit: string;
+  }>;
 }
 
 export const MotorbikeSchema = SchemaFactory.createForClass(Motorbike);

@@ -31,6 +31,9 @@ export class BookingTour extends Document {
 
   @Prop({ default: 'waiting' })
   status: string;
+
+  @Prop({ type: Object, default: null })
+  tourHistory: Record<string, any>;
 }
 
 export const BookingTourSchema = SchemaFactory.createForClass(BookingTour);

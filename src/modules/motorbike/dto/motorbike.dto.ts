@@ -5,7 +5,7 @@ export class MotorbikeDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   description: string;
 

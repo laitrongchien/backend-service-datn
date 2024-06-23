@@ -46,7 +46,9 @@ export class RentalService {
   }
 
   async getMotorbikeRentalsByUser(userId: string) {
-    return await this.motorbikeRentalModel.find({ user: userId });
+    return await this.motorbikeRentalModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 });
   }
 
   async getMotorbikeRentalDetail(rentalId: string) {

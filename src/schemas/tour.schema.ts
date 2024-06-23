@@ -9,9 +9,6 @@ export class Tour extends Document {
   @Prop({ required: true })
   duration: number;
 
-  // @Prop({ required: true, enum: ['chill', 'moderate', 'challenging'] })
-  // difficulty: string;
-
   @Prop({
     default: 0,
     max: 5,
@@ -62,6 +59,9 @@ export class Tour extends Document {
 
   @Prop()
   isFavorite: boolean;
+
+  @Prop({ default: false })
+  isDeleted: boolean;
 }
 
 export const TourSchema = SchemaFactory.createForClass(Tour);

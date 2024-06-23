@@ -72,8 +72,8 @@ export class MotorIdentificationController {
   }
 
   @Post('/import-motor-identification')
-  // @Roles('admin')
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async importMotorIdentification(
     @Body() importMotorIdentificationData: CreateMotorIdentificationDto[],
   ) {

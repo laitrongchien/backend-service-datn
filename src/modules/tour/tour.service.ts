@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { Tour } from '../../schemas/tour.schema';
 import { FavoriteTour } from '../../schemas/favoriteTour.schema';
 import { SelfTour } from '../../schemas/selfTour.schema';
+import { BookingTour } from '../../schemas/bookingTour.schema';
 import { TourDto } from './dto/tour.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateSelfTourDto } from './dto/create-self-tour.dto';
@@ -20,6 +21,8 @@ export class TourService {
     @InjectModel(FavoriteTour.name)
     private readonly favoriteTourModel: Model<FavoriteTour>,
     @InjectModel(SelfTour.name) private readonly selfTourModel: Model<SelfTour>,
+    @InjectModel(BookingTour.name)
+    private readonly bookingTourModel: Model<BookingTour>,
     private cloudinaryService: CloudinaryService,
   ) {}
 
@@ -110,7 +113,21 @@ export class TourService {
   }
 
   async deleteTour(id: string) {
-    return await this.tourModel.findByIdAndDelete(id);
+    const deleteTour = await this.tourModel.findByIdAndDelete(id);
+    if (deleteTour) {
+      await this.favoriteTourModel.deleteMany({ tour: id });
+      await this.bookingTourModel.updateMany(
+        { tour: id },
+        {
+          tourHistory: {
+            name: deleteTour.name,
+            imageCover: deleteTour.imageCover,
+            price: deleteTour.price,
+          },
+        },
+      );
+    }
+    return deleteTour;
   }
 
   async likeTour(userId: string, tourId: string) {

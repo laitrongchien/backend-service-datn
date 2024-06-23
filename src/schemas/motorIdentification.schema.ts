@@ -42,6 +42,13 @@ export class MotorIdentification extends Document {
 
   @Prop({ default: false })
   isUsed: boolean;
+
+  @Prop()
+  lastMaintain: Array<{
+    type: string;
+    lastDate: Date;
+    lastKm: number;
+  }>;
 }
 
 export const MotorIdentificationSchema =

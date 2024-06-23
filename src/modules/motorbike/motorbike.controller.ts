@@ -55,6 +55,11 @@ export class MotorbikeController {
     return this.motorbikeService.getMotorbikeById(id);
   }
 
+  @Get('get-suggest-motorbikes')
+  async getSuggestMotorbikes(@Query('distance') distance: number) {
+    return this.motorbikeService.getSuggestMotorbikes(distance);
+  }
+
   @Post('/create-motorbike')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -4,8 +4,14 @@ import { Model } from 'mongoose';
 import { Motorbike } from '../../schemas/motorbike.schema';
 import { FavoriteMotorbike } from '../../schemas/favoriteMotorbike.schema';
 import { MotorIdentification } from '../../schemas/motorIdentification.schema';
+import { MotorbikeRental } from '../../schemas/motorbikeRental.schema';
 import { MotorbikeDto } from './dto/motorbike.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import {
+  ENGINE_VALUE,
+  MEDIUM_DISTANCE,
+  SHORT_DISTANCE,
+} from './motorbike.constant';
 
 @Injectable()
 export class MotorbikeService {
@@ -16,6 +22,8 @@ export class MotorbikeService {
     private readonly favoriteMotorbikeModel: Model<FavoriteMotorbike>,
     @InjectModel(MotorIdentification.name)
     private readonly motorIdentificationModel: Model<MotorIdentification>,
+    @InjectModel(MotorbikeRental.name)
+    private readonly motorbikeRentalModel: Model<MotorbikeRental>,
     private cloudinaryService: CloudinaryService,
   ) {}
 
@@ -70,17 +78,42 @@ export class MotorbikeService {
   }
 
   async updateMotorbike(id: string, updateMotorbikeData: MotorbikeDto) {
-    return await this.motorbikeModel.findByIdAndUpdate(
+    const motorbike = await this.motorbikeModel.findByIdAndUpdate(
       id,
       updateMotorbikeData,
       {
         new: true,
       },
     );
+    const numOfMotorIdentifications =
+      await this.motorIdentificationModel.countDocuments({
+        motorbike: id,
+      });
+    return { ...motorbike.toObject(), numOfMotorIdentifications };
   }
 
   async deleteMotorbike(id: string) {
-    return await this.motorbikeModel.findByIdAndDelete(id);
+    const deleteMotorbike = await this.motorbikeModel.findByIdAndDelete(id);
+    if (deleteMotorbike) {
+      await this.favoriteMotorbikeModel.deleteMany({ motorbike: id });
+      await this.motorIdentificationModel.deleteMany({ motorbike: id });
+      await this.motorbikeRentalModel.updateMany(
+        { 'motorbikes.motorbike': id },
+        {
+          $set: {
+            'motorbikes.$[elem].motorbikeHistory': {
+              name: deleteMotorbike.name,
+              image: deleteMotorbike.image,
+              price: deleteMotorbike.price,
+            },
+          },
+        },
+        {
+          arrayFilters: [{ 'elem.motorbike': id }],
+        },
+      );
+    }
+    return deleteMotorbike;
   }
 
   async likeMotorbike(userId: string, motorbikeId: string) {
@@ -117,5 +150,15 @@ export class MotorbikeService {
     } catch (error) {
       throw new BadRequestException('Invalid file type.');
     }
+  }
+
+  async getSuggestMotorbikes(distance: number) {
+    const suggestQuery =
+      distance > SHORT_DISTANCE.MIN && distance <= SHORT_DISTANCE.MAX
+        ? { type: { $in: ['semi-automatic', 'automatic'] } }
+        : distance > MEDIUM_DISTANCE.MIN && distance <= MEDIUM_DISTANCE.MAX
+          ? { type: 'manual', engine: { $lte: ENGINE_VALUE } }
+          : { type: 'manual', engine: { $gt: ENGINE_VALUE } };
+    return await this.motorbikeModel.find(suggestQuery);
   }
 }

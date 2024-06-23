@@ -40,12 +40,6 @@ export class SelfTour extends Document {
   @Prop({ required: true, type: Date })
   endDate: Date;
 
-  @Prop({ required: true, type: String })
-  name: string;
-
-  @Prop({ required: true, type: Number })
-  numberPeople: number;
-
   @Prop({ type: String })
   description: string;
 }

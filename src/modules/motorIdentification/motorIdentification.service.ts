@@ -5,6 +5,7 @@ import { MotorIdentification } from 'src/schemas/motorIdentification.schema';
 import { CreateMotorIdentificationDto } from './dto/create-motor-identification.dto';
 import { UpdateMotorIdentificationDto } from './dto/update-motor-identification.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { NotificationService } from '../notification/notification.service';
 // import {
 //   VERY_SERIOUS_FAILURE_IMPACT,
 //   SERIOUS_FAILURE_IMPACT,
@@ -22,6 +23,7 @@ export class MotorIdentificationService {
   constructor(
     @InjectModel(MotorIdentification.name)
     private readonly motorIdentificationModel: Model<MotorIdentification>,
+    private notificationService: NotificationService,
   ) {}
 
   async createMotorIdentification(
@@ -136,5 +138,82 @@ export class MotorIdentificationService {
     //     );
     //   });
     // });
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  async calculateWhenMaintain() {
+    console.log('calculate');
+    const motorIdentifications = await this.motorIdentificationModel
+      .find()
+      .populate({ path: 'motorbike', select: 'maintainSchedule' });
+
+    await Promise.all(
+      motorIdentifications.map(async (motorIdentification: any) => {
+        if (motorIdentification.lastMaintain.length === 0) {
+          return;
+        }
+
+        let needsUpdate = false;
+
+        motorIdentification.lastMaintain.forEach(
+          (lastMaintainItem: {
+            type: string;
+            lastKm: number;
+            lastDate: Date;
+          }) => {
+            const schedule =
+              motorIdentification.motorbike.maintainSchedule.find(
+                (s: any) => s.type === lastMaintainItem.type,
+              );
+            let isDue = false;
+            if (schedule.unit === 'km') {
+              const leftKm =
+                motorIdentification.km_driven - lastMaintainItem.lastKm;
+              console.log(leftKm);
+
+              if (leftKm >= schedule.quantity) isDue = true;
+            } else {
+              const leftTime =
+                (new Date().getTime() -
+                  new Date(lastMaintainItem.lastDate).getTime()) /
+                (1000 * 24 * 60 * 60);
+              console.log(leftTime);
+              if (leftTime >= schedule.quantity) isDue = true;
+            }
+
+            if (isDue) {
+              lastMaintainItem.lastDate = new Date();
+              lastMaintainItem.lastKm = motorIdentification.km_driven;
+              needsUpdate = true;
+              this.notificationService.sendNotification({
+                message: `Xe ${motorIdentification.identification} đến hạn ${lastMaintainItem.type}`,
+                notificationType: 'maintainance',
+                user: '65be63ddb6e177fc5fdc9da3',
+              });
+            }
+          },
+        );
+        if (needsUpdate) {
+          const updateOperations = motorIdentification.lastMaintain.map(
+            (item: any) => ({
+              updateOne: {
+                filter: {
+                  _id: motorIdentification._id,
+                  'lastMaintain.type': item.type,
+                },
+                update: {
+                  $set: {
+                    'lastMaintain.$.lastDate': item.lastDate,
+                    'lastMaintain.$.lastKm': item.lastKm,
+                  },
+                },
+              },
+            }),
+          );
+
+          await this.motorIdentificationModel.bulkWrite(updateOperations);
+        }
+      }),
+    );
   }
 }

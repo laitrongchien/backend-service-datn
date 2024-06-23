@@ -15,6 +15,7 @@ export class MotorbikeRental extends Document {
     type: [
       {
         motorbike: { type: MongooseSchema.Types.ObjectId, ref: 'Motorbike' },
+        motorbikeHistory: { type: Object, default: null },
         startDate: Date,
         finishDate: Date,
         numMotorbikes: Number,
@@ -24,6 +25,7 @@ export class MotorbikeRental extends Document {
   })
   motorbikes: {
     motorbike: Motorbike;
+    motorbikeHistory: Record<string, any>;
     startDate: Date;
     finishDate: Date;
     numMotorbikes: number;

@@ -38,7 +38,7 @@ export class BookingTourService {
   async getBookingTourById(id: string) {
     return await this.bookingTourModel
       .findById(id)
-      .populate({ path: 'tour' })
+      .populate({ path: 'tour', select: 'name imageCover price' })
       .populate({ path: 'user', select: 'name email' });
   }
 

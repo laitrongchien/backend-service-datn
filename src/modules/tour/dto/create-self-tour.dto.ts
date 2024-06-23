@@ -2,7 +2,6 @@ import {
   IsArray,
   IsDateString,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -34,14 +33,6 @@ export class CreateSelfTourDto {
   @IsNotEmpty()
   @IsDateString()
   endDate: Date;
-
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  numberPeople: number;
 
   @IsOptional()
   @IsString()
