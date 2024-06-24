@@ -92,6 +92,17 @@ export class MotorbikeService {
     return { ...motorbike.toObject(), numOfMotorIdentifications };
   }
 
+  async updateMotorMaintainSchedule(
+    id: string,
+    maintainSchedule: { type: string; quantity: number; unit: string }[],
+  ) {
+    return await this.motorbikeModel.findByIdAndUpdate(
+      id,
+      { maintainSchedule },
+      { new: true },
+    );
+  }
+
   async deleteMotorbike(id: string) {
     const deleteMotorbike = await this.motorbikeModel.findByIdAndDelete(id);
     if (deleteMotorbike) {

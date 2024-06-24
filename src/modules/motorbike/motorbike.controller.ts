@@ -77,6 +77,20 @@ export class MotorbikeController {
     return this.motorbikeService.updateMotorbike(id, updateMotorbikeDto);
   }
 
+  @Put('/update-motor-maintain-schedule/:id')
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateMotorMaintainSchedule(
+    @Param('id') id: string,
+    @Body('maintainSchedule')
+    maintainSchedule: { type: string; quantity: number; unit: string }[],
+  ) {
+    return this.motorbikeService.updateMotorMaintainSchedule(
+      id,
+      maintainSchedule,
+    );
+  }
+
   @Delete('delete-motorbike/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
