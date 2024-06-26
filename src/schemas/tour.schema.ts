@@ -59,9 +59,6 @@ export class Tour extends Document {
 
   @Prop()
   isFavorite: boolean;
-
-  @Prop({ default: false })
-  isDeleted: boolean;
 }
 
 export const TourSchema = SchemaFactory.createForClass(Tour);
