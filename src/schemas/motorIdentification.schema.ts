@@ -49,6 +49,9 @@ export class MotorIdentification extends Document {
     lastDate: Date;
     lastKm: number;
   }>;
+
+  @Prop()
+  isForTour: boolean;
 }
 
 export const MotorIdentificationSchema =

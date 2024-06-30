@@ -54,7 +54,9 @@ export class TourService {
   }
 
   async getTourById(id: string) {
-    return await this.tourModel.findById(id);
+    return (await this.tourModel.findById(id)).populate({
+      path: 'motorForTour',
+    });
   }
 
   async getAllTours(
@@ -110,6 +112,14 @@ export class TourService {
     return await this.tourModel.findByIdAndUpdate(id, updateTourDto, {
       new: true,
     });
+  }
+
+  async updateRemainGuestOfTour(id: string, availableRemain: number) {
+    return await this.tourModel.findByIdAndUpdate(
+      id,
+      { availableRemain },
+      { new: true },
+    );
   }
 
   async deleteTour(id: string) {

@@ -37,3 +37,15 @@ export class BookingTour extends Document {
 }
 
 export const BookingTourSchema = SchemaFactory.createForClass(BookingTour);
+
+BookingTourSchema.post('save', async function () {
+  // `this` refers to the BookingTour document that was saved
+  if (this.tour) {
+    const tourModel = this.model('Tour');
+    const tour: any = await tourModel.findById(this.tour);
+    if (tour && tour.availableRemain > 0) {
+      tour.availableRemain -= 1;
+      await tour.save();
+    }
+  }
+});

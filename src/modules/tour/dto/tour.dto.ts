@@ -35,7 +35,7 @@ export class TourDto {
   startLocation: string;
 
   @IsOptional()
-  startDates: Date[];
+  startDate: Date;
 
   @IsNotEmpty()
   @IsArray()

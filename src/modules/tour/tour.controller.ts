@@ -97,6 +97,14 @@ export class TourController {
     return this.tourService.updateTour(id, updateTourDto);
   }
 
+  @Put('/update-remain-guest/:id')
+  async updateRemainGuestOfTour(
+    @Param('id') id: string,
+    @Body('availableRemain') availableRemain: number,
+  ) {
+    return this.tourService.updateRemainGuestOfTour(id, availableRemain);
+  }
+
   @Delete('delete-tour/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)

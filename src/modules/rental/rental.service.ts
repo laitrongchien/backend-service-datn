@@ -23,6 +23,7 @@ export class RentalService {
       user: userId,
       phone: createRentalMotorbikeDto.phone,
       motorbikes: createRentalMotorbikeDto.motorbikes,
+      location: createRentalMotorbikeDto.location,
       paymentType: createRentalMotorbikeDto.paymentType,
       totalPrice: createRentalMotorbikeDto.totalPrice,
     });

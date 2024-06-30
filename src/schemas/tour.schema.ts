@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Motorbike } from './motorbike.schema';
 
 @Schema()
 export class Tour extends Document {
@@ -37,8 +38,26 @@ export class Tour extends Document {
   @Prop()
   startLocation: string;
 
-  @Prop([Date])
-  startDates: Date[];
+  @Prop()
+  startDate: Date;
+
+  @Prop({ type: Number, default: 10 })
+  maxGuest: number;
+
+  @Prop({
+    type: Number,
+    default: function () {
+      return this.maxGuest;
+    },
+  })
+  availableRemain: number;
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Motorbike',
+    default: '65f040aa31db5ce14317ab14',
+  })
+  motorForTour: Motorbike;
 
   @Prop({
     type: [
@@ -62,3 +81,11 @@ export class Tour extends Document {
 }
 
 export const TourSchema = SchemaFactory.createForClass(Tour);
+
+TourSchema.pre('findOneAndUpdate', function (next) {
+  const update: any = this.getUpdate();
+  if (update.startDate) {
+    update.availableRemain = update.maxGuest || 10;
+  }
+  next();
+});

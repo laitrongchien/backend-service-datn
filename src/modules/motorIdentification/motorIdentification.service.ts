@@ -90,14 +90,20 @@ export class MotorIdentificationService {
       .populate({ path: 'motorbike', select: 'name' });
   }
 
-  async getAllAvailableMotor(motorbikeId: string, location: string) {
-    return await this.motorIdentificationModel.find({
+  async getAllAvailableMotor(
+    motorbikeId: string,
+    location: string,
+    isForTour: boolean,
+  ) {
+    const query = {
       motorbike: motorbikeId,
       status: 'normal',
       isUsed: false,
       performance: { $in: ['good', 'medium'] },
       location: location,
-    });
+      isForTour: isForTour,
+    };
+    return await this.motorIdentificationModel.find(query);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
@@ -107,7 +113,6 @@ export class MotorIdentificationService {
 
     // motorIdentifications.forEach(async (motorIdentification: any) => {
     //   const data = motorIdentification.toObject();
-    //   // console.log(data);
     //   const overall_failures =
     //     VERY_SERIOUS_FAILURE_IMPACT * data.very_serious_failures +
     //     SERIOUS_FAILURE_IMPACT * data.serious_failures +
@@ -130,7 +135,6 @@ export class MotorIdentificationService {
     //   }).then(async (results) => {
     //     performanceValue =
     //       results[0] === '0' ? 'good' : results[0] === '1' ? 'medium' : 'bad';
-    //     console.log(performanceValue);
     //     await this.motorIdentificationModel.findByIdAndUpdate(
     //       motorIdentification._id,
     //       { performance: performanceValue },
