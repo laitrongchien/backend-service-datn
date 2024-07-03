@@ -2,16 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MotorbikeRental } from 'src/schemas/motorbikeRental.schema';
+import { MotorIdentification } from 'src/schemas/motorIdentification.schema';
 import { CreateRentalMotorbikeDto } from './dto/create-rental-motorbike.dto';
 import { UpdateRentalStatusDto } from './dto/update-rental-status.dto';
 import { UpdateExtraFeeDto } from './dto/update-extra-fee.dto';
 import { NotificationService } from '../notification/notification.service';
+import { NOT_RECEIVED_STATUS } from './rental.constant';
 
 @Injectable()
 export class RentalService {
   constructor(
     @InjectModel(MotorbikeRental.name)
     private readonly motorbikeRentalModel: Model<MotorbikeRental>,
+    @InjectModel(MotorIdentification.name)
+    private readonly motorIdentificationModel: Model<MotorIdentification>,
     private notificationService: NotificationService,
   ) {}
 
@@ -66,11 +70,34 @@ export class RentalService {
     id: string,
     updateRentalStatus: UpdateRentalStatusDto,
   ) {
-    return await this.motorbikeRentalModel.findByIdAndUpdate(
+    const rental = await this.motorbikeRentalModel.findByIdAndUpdate(
       id,
       { status: updateRentalStatus.status },
       { new: true },
     );
+    if (updateRentalStatus.status === NOT_RECEIVED_STATUS) {
+      const numMotorbikes = rental.motorbikes.reduce(
+        (acc, curr) => acc + curr.numMotorbikes,
+        0,
+      );
+      const randomDocs = await this.motorIdentificationModel.aggregate([
+        {
+          $match: {
+            motorbike: rental.motorbikes[0].motorbike,
+            isTempoRent: true,
+          },
+        },
+        { $sample: { size: numMotorbikes } },
+      ]);
+
+      for (const doc of randomDocs) {
+        await this.motorIdentificationModel.updateOne(
+          { _id: doc._id },
+          { $unset: { isTempoRent: '' } },
+        );
+      }
+    }
+    return rental;
   }
 
   async updateExtraFee(id: string, updateExtraFeeData: UpdateExtraFeeDto) {
@@ -82,8 +109,27 @@ export class RentalService {
   }
 
   async updateIdentificationsRental(id: string, identifications: string[]) {
-    const rental = await this.motorbikeRentalModel.findById(id);
-    rental.motorbikes[0].identifications = identifications;
-    return await rental.save();
+    const rental = await this.motorbikeRentalModel.findByIdAndUpdate(
+      id,
+      { $set: { 'motorbikes.0.identifications': identifications } },
+      { new: true },
+    );
+    const randomDocs = await this.motorIdentificationModel.aggregate([
+      {
+        $match: {
+          motorbike: rental.motorbikes[0].motorbike,
+          isTempoRent: true,
+        },
+      },
+      { $sample: { size: identifications.length } },
+    ]);
+
+    for (const doc of randomDocs) {
+      await this.motorIdentificationModel.updateOne(
+        { _id: doc._id },
+        { $unset: { isTempoRent: '' } },
+      );
+    }
+    return rental;
   }
 }

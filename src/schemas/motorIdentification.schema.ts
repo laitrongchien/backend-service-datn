@@ -44,6 +44,9 @@ export class MotorIdentification extends Document {
   isUsed: boolean;
 
   @Prop()
+  isTempoRent: boolean;
+
+  @Prop()
   lastMaintain: Array<{
     type: string;
     lastDate: Date;

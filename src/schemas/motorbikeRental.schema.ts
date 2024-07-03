@@ -56,3 +56,33 @@ export class MotorbikeRental extends Document {
 
 export const MotorbikeRentalSchema =
   SchemaFactory.createForClass(MotorbikeRental);
+
+MotorbikeRentalSchema.post('save', async function (doc) {
+  const motorIdentificationModel = this.model('MotorIdentification');
+  const numMotorbikes = doc.motorbikes.reduce(
+    (acc, curr) => acc + curr.numMotorbikes,
+    0,
+  );
+  const location = doc.location;
+  const motorbikeIds = doc.motorbikes.map((motorbike) => motorbike.motorbike);
+
+  const motorIdentifications = await motorIdentificationModel.aggregate([
+    {
+      $match: {
+        motorbike: { $in: motorbikeIds },
+        status: 'normal',
+        isUsed: false,
+        performance: { $in: ['good', 'medium'] },
+        location: location,
+      },
+    },
+    { $sample: { size: numMotorbikes } },
+  ]);
+
+  for (const motorIdentification of motorIdentifications) {
+    await motorIdentificationModel.updateOne(
+      { _id: motorIdentification._id },
+      { $set: { isTempoRent: true } },
+    );
+  }
+});

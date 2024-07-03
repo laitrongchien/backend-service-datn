@@ -54,11 +54,13 @@ export class MotorIdentificationController {
     @Param('motorbikeId') motorbikeId: string,
     @Query('location') location: string,
     @Query('isForTour') isForTour: boolean,
+    @Query('isTempoRent') isTempoRent: boolean,
   ) {
     return this.motorIdentificationService.getAllAvailableMotor(
       motorbikeId,
       location,
       isForTour,
+      isTempoRent,
     );
   }
 

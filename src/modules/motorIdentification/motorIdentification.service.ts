@@ -94,8 +94,9 @@ export class MotorIdentificationService {
     motorbikeId: string,
     location: string,
     isForTour: boolean,
+    isTempoRent: boolean,
   ) {
-    const query = {
+    const query: any = {
       motorbike: motorbikeId,
       status: 'normal',
       isUsed: false,
@@ -103,6 +104,10 @@ export class MotorIdentificationService {
       location: location,
       isForTour: isForTour,
     };
+
+    if (isTempoRent !== undefined) {
+      query.isTempoRent = undefined;
+    }
     return await this.motorIdentificationModel.find(query);
   }
 
