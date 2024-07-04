@@ -44,6 +44,11 @@ export class MotorbikeController {
     );
   }
 
+  @Get('/popular-motorbikes')
+  async getPopularMotorbikes() {
+    return this.motorbikeService.getPopularMotorbikes();
+  }
+
   @Get('/favorite-motorbikes')
   @UseGuards(JwtAuthGuard)
   getFavoriteMotorbike(@Req() req: Request) {

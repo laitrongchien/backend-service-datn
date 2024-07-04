@@ -71,6 +71,13 @@ export class MotorbikeService {
     return { motorbikes, totalPages };
   }
 
+  async getPopularMotorbikes() {
+    return await this.motorbikeModel
+      .find()
+      .sort({ ratingsAverage: -1, ratingsQuantity: -1 })
+      .limit(6);
+  }
+
   async getFavoriteMotorbike(userId: string) {
     return await this.favoriteMotorbikeModel
       .find({ user: userId })
