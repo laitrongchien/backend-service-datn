@@ -47,7 +47,7 @@ export class BookingTourService {
     if (cancelBooking && cancelBooking.tour) {
       await this.tourModel.findByIdAndUpdate(
         cancelBooking.tour,
-        { $inc: { availableGuest: cancelBooking.numberPeople } },
+        { $inc: { availableRemain: cancelBooking.numberPeople } },
         { new: true },
       );
     }
