@@ -108,6 +108,35 @@ export class RentalService {
     );
   }
 
+  async cancelRentalOrder(id: string) {
+    const rental = await this.motorbikeRentalModel.findByIdAndUpdate(
+      id,
+      { status: 'cancel' },
+      { new: true },
+    );
+    const numMotorbikes = rental.motorbikes.reduce(
+      (acc, curr) => acc + curr.numMotorbikes,
+      0,
+    );
+    const randomDocs = await this.motorIdentificationModel.aggregate([
+      {
+        $match: {
+          motorbike: rental.motorbikes[0].motorbike,
+          isTempoRent: true,
+        },
+      },
+      { $sample: { size: numMotorbikes } },
+    ]);
+
+    for (const doc of randomDocs) {
+      await this.motorIdentificationModel.updateOne(
+        { _id: doc._id },
+        { $unset: { isTempoRent: '' } },
+      );
+    }
+    return rental;
+  }
+
   async updateIdentificationsRental(id: string, identifications: string[]) {
     const rental = await this.motorbikeRentalModel.findByIdAndUpdate(
       id,

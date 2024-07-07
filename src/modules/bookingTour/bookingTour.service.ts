@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BookingTour } from '../../schemas/bookingTour.schema';
+import { Tour } from '../../schemas/tour.schema';
 import { CreateBookingTourDto } from './dto/create-booking-tour.dto';
 import { UpdateBookingTourStatusDto } from './dto/update-booking-tour-status.dto';
 import { NotificationService } from '../notification/notification.service';
@@ -11,6 +12,8 @@ export class BookingTourService {
   constructor(
     @InjectModel(BookingTour.name)
     private readonly bookingTourModel: Model<BookingTour>,
+    @InjectModel(Tour.name)
+    private readonly tourModel: Model<Tour>,
     private notificationService: NotificationService,
   ) {}
 
@@ -35,6 +38,22 @@ export class BookingTourService {
     );
   }
 
+  async cancelBookingTour(id: string) {
+    const cancelBooking = await this.bookingTourModel.findByIdAndUpdate(
+      id,
+      { status: 'cancel' },
+      { new: true },
+    );
+    if (cancelBooking && cancelBooking.tour) {
+      await this.tourModel.findByIdAndUpdate(
+        cancelBooking.tour,
+        { $inc: { availableGuest: cancelBooking.numberPeople } },
+        { new: true },
+      );
+    }
+    return cancelBooking;
+  }
+
   async getBookingTourById(id: string) {
     return await this.bookingTourModel
       .findById(id)
@@ -43,7 +62,9 @@ export class BookingTourService {
   }
 
   async getBookingTourByUser(userId: string) {
-    return await this.bookingTourModel.find({ user: userId });
+    return await this.bookingTourModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 });
   }
 
   async getAllBookingTours() {

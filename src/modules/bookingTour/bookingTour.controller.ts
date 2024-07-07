@@ -52,6 +52,12 @@ export class BookingTourController {
     );
   }
 
+  @Put('/cancel-booking-tour/:id')
+  @UseGuards(JwtAuthGuard)
+  async cancelBookingTour(@Param('id') id: string) {
+    return this.bookingTourService.cancelBookingTour(id);
+  }
+
   @Get('/get-user-booking-tour')
   @UseGuards(JwtAuthGuard)
   async getBookingTourByUser(@Req() req: Request) {

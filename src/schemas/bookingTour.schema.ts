@@ -43,8 +43,8 @@ BookingTourSchema.post('save', async function () {
   if (this.tour) {
     const tourModel = this.model('Tour');
     const tour: any = await tourModel.findById(this.tour);
-    if (tour && tour.availableRemain > 0) {
-      tour.availableRemain -= 1;
+    if (tour && tour.availableRemain >= this.numberPeople) {
+      tour.availableRemain -= this.numberPeople;
       await tour.save();
     }
   }

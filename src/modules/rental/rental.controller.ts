@@ -61,6 +61,12 @@ export class RentalController {
     return this.rentalService.updateRentalStatus(id, updateRentalStatus);
   }
 
+  @Put('/cancel-rental-order/:id')
+  @UseGuards(JwtAuthGuard)
+  async cancelRentalOrder(@Param('id') id: string) {
+    return this.rentalService.cancelRentalOrder(id);
+  }
+
   @Put('/update-rental-extra-fee/:id')
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
