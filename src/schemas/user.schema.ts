@@ -22,7 +22,7 @@ export class User extends Document {
 
   @Prop({
     default:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPAer2ilVW8b1pynyMFWdAVGWQWeDgLICig&usqp=CAU',
+      'https://res.cloudinary.com/dufuwsrue/image/upload/v1716134461/motortour/images/avatar/download_tfhmc6.jpg',
   })
   avatar: string;
 
